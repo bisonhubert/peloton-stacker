@@ -3,9 +3,9 @@ import pytest
 from peloton.workout.day import Day
 
 
-def test_day(snapshot):
+def test_day(snapshot, ride_1, ride_2):
     for i in range(6):
-        day = Day(i + 1)
+        day = Day(i + 1, [ride_1, ride_2])
         snapshot.assert_match(day.__dict__, f"{day.name} as dict")
         snapshot.assert_match(str(day), f"{day.name} as string")
 
