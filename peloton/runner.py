@@ -15,6 +15,42 @@ current_workout_set = [
     Stretches.full_body_stretch_6,
 ]
 
+# BYPZ
+# current_workout_set = [
+#     Cycling.week_4_day_1,
+#     Cycling.week_4_day_2,
+#     Cycling.week_4_day_3,
+#     Cycling.week_5_day_1,
+#     Cycling.week_5_day_2,
+#     Cycling.week_5_day_3_part_1,
+#     Cycling.week_5_day_3_part_2,
+# ]
+
+# 5min Cool Down Rides
+# current_workout_set = [
+#     Cycling.ally_5_min_1,
+#     Cycling.ally_5_min_2,
+#     Cycling.ben_5_min,
+#     Cycling.emma_5_min,
+#     Cycling.robin_5_min,
+#     Cycling.cody_5_min,
+#     Cycling.dennis_5_min,
+#     Cycling.tunde_5_min_1,
+#     Cycling.tunde_5_min_2,
+# ]
+
+# 10min Cool Down Rides
+# current_workout_set = [
+#     Cycling.alex_10_min,
+#     Cycling.dennis_10_min,
+#     Cycling.ally_10_min,
+#     Cycling.robin_10_min,
+#     Cycling.olivia_10_min,
+#     Cycling.hannah_10_min,
+#     Cycling.tunde_10_min_1,
+#     Cycling.tunde_10_min_2,
+# ]
+
 
 class Runner:
     def __init__(self):
@@ -23,14 +59,14 @@ class Runner:
         self.current_workout_set = current_workout_set
 
     def _set_week_and_day(self):
-        week = next(filter(lambda x: '--w=' in x, sys.argv), None)
+        week = next(filter(lambda x: "--w=" in x, sys.argv), None)
         if week is not None:
-            self.week = int(week.split('=')[-1])
-            day = next(filter(lambda x: '--d=' in x, sys.argv), None)
+            self.week = int(week.split("=")[-1])
+            day = next(filter(lambda x: "--d=" in x, sys.argv), None)
             if day is None:
                 self.day = 1
             else:
-                self.day = int(day.split('=')[-1])
+                self.day = int(day.split("=")[-1])
         else:
             ui = UserInput()
             ui.run()
@@ -46,7 +82,7 @@ class Runner:
         StackBuilder(self.current_workout_set)._empty()
 
     def run(self):
-        if '--empty' in sys.argv:
+        if "--empty" in sys.argv:
             self._empty_stack()
         else:
             self._set_week_and_day()
