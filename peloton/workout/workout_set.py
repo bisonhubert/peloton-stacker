@@ -1,4 +1,5 @@
 class WorkoutSet:
     pass
 
-print('WorkoutSet loaded')
+
+print("WorkoutSet loaded")

@@ -1,4 +1,5 @@
 class Day:
     pass
 
-print('Day loaded')
+
+print("Day loaded")

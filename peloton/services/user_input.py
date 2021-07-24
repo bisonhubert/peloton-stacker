@@ -34,11 +34,9 @@ class UserInput:
         self.day = int(input(prompt))
 
     def _confirm(self):
-        day = self.format_time('day')
-        week = self.format_time('week')
-        question = (
-            f"Programming Stack for {day}, {week}. Is this correct?"
-        )
+        day = self.format_time("day")
+        week = self.format_time("week")
+        question = f"Programming Stack for {day}, {week}. Is this correct?"
         options = ["1 - Yes", "2 - No"]
         prompt = self._generate_prompt(question, options)
         if input(prompt) == "2":
