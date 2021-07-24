@@ -22,11 +22,20 @@ class Runner:
         self.week = None
         self.current_workout_set = current_workout_set
 
-    def _run_user_input(self):
-        ui = UserInput()
-        ui.run()
-        self.day = ui.day
-        self.week = ui.week
+    def _set_week_and_day(self):
+        week = next(filter(lambda x: '--w=' in x, sys.argv), None)
+        if week is not None:
+            self.week = int(week.split('=')[-1])
+            day = next(filter(lambda x: '--d=' in x, sys.argv), None)
+            if day is None:
+                self.day = 1
+            else:
+                self.day = int(day.split('=')[-1])
+        else:
+            ui = UserInput()
+            ui.run()
+            self.day = ui.day
+            self.week = ui.week
 
     def _add_classes(self):
         # this should eventually load workout_set as JSON or a Python dict
@@ -34,8 +43,6 @@ class Runner:
         StackBuilder(self.current_workout_set).run()
 
     def _empty_stack_from_sys_flag(self):
-        if sys.argv is None:
-            return
         if '--empty' in sys.argv:
             self._empty_stack()
 
@@ -43,7 +50,7 @@ class Runner:
         StackBuilder(self.current_workout_set)._empty()
 
     def run(self):
-        self._run_user_input()
+        self._set_week_and_day()
         self._add_classes()
         self._empty_stack_from_sys_flag()
 
