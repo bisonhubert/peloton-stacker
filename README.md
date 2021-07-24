@@ -1,3 +1,5 @@
+This is ripped from [https://github.com/geudrik/peloton-client-library](https://github.com/geudrik/peloton-client-library).
+
 ## Peloton Client Library
 Hello Peloton! I wanted to thank you for being sane people and utilizing an API to move data around, at the very
 least, from within your web app (I have no idea how you do it on the bike etc).
