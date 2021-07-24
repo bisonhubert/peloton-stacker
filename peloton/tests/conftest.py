@@ -3,5 +3,5 @@ import pytest
 from peloton.workout.day import Day
 
 @pytest.fixture
-def monday():
-    return Day(1)
+def days():
+    return [Day(i + 1) for i in range(7)]

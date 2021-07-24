@@ -11,7 +11,7 @@ def test_day(snapshot):
 
 def test_day_with_invalid_number():
     with pytest.raises(Exception) as e:
+        Day()
         Day(0)
         Day(8)
         Day('1')
-        Day()
