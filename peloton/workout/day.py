@@ -1,7 +1,8 @@
 class Day:
-    def __init__(self, number):
+    def __init__(self, number, rides=None):
         self.number = number
         self.name = self._get_name_from_number(number)
+        self.rides = [ride for ride in rides] if rides is not None else None
 
     def _get_name_from_number(self, number):
         if type(number) != int:
