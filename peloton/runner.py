@@ -1,17 +1,38 @@
-from classes.instructors import adrian_williams
-from stack import Stack
+from stack.stack_builder import StackBuilder
 from user_input import UserInput
+from workout.current_workout_set import current_workout_set
+
+class Runner:
+    def __init__(self):
+        self.day = None
+        self.week = None
+        self.current_workout_set = current_workout_set
+
+    def _run_user_input(self):
+        ui = UserInput()
+        ui.run()
+        self.day = ui.day
+        self.week = ui.week
+
+    def _get_workout_set(self):
+        # this acts as a cartridge with preset workouts
+        # pre-compiled sets are recorded in workout/constants.py
+        pass
 
 
+    def run(self):
+        # self._run_user_input()
+        pass
 
-# prompt
-# ui = UserInput()
-# ui.run()
+
+runner = Runner()
+runner.run()
+
 
 # test adding class
-full_body_stretch_classes = adrian_williams.FullBodyStretchClass().get_class_ids()
-stack = Stack([full_body_stretch_classes[-1]])
-stack.run()
+# full_body_stretch_classes = adrian_williams.FullBodyStretchClass().get_class_ids()
+# stack = StackBuilder([full_body_stretch_classes[-1]])
+# stack.run()
 
 
 # Questions
@@ -26,6 +47,8 @@ stack.run()
 
 # Features
 # 1. Bypass user prompt by supplying week and day in command
+# 2. Test runner
+# 3. Auto-generate (cookie-cutter) new workout set file with filename and auto-gen date
 
 # Day
 # classes to add for a day of the week (M-Sun)
