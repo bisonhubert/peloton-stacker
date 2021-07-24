@@ -1,10 +1,9 @@
-from graphql_ids import AdrianWilliams
-from ride import Ride
+from ride_ids import Stretches
 from stack.stack_builder import StackBuilder
-from user_input import UserInput
+from services.user_input import UserInput
 # from workout.current_workout_set import current_workout_set
 
-current_workout_set = [Ride(AdrianWilliams.full_body_stretch_1, AdrianWilliams.slug).graphql_id]
+current_workout_set = [Stretches.full_body_stretch_1]
 
 class Runner:
     def __init__(self):
