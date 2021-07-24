@@ -1,4 +1,5 @@
 class Week:
     pass
 
-print('Week loaded')
+
+print("Week loaded")

@@ -4,10 +4,7 @@ from account import Account
 from stack.constants import Api, Operation, Queries
 
 
-
-
 class StackBuilder:
-
     def __init__(self, class_ids):
         self.session = None
         self.class_ids = (
@@ -25,7 +22,7 @@ class StackBuilder:
         # todobison this doesn't work
         elif operation == Operation.EMPTY:
             payload["operationName"] = "ModifyStack"
-            payload["query"] = Queries.CLEAR 
+            payload["query"] = Queries.CLEAR
             variables = {"input": {"pelotonClassIdList": []}}
         elif operation == Operation.VIEW:
             payload["operationName"] = "ViewUserStack"
