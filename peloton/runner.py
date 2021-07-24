@@ -1,9 +1,12 @@
-from ride_ids import Stretches
+import sys
+
+from ride_ids import Cycling, Stretches
 from stack.stack_builder import StackBuilder
 from services.user_input import UserInput
 
 current_workout_set = [
     Stretches.full_body_stretch_1,
+    Cycling.week_4_day_1,
     Stretches.foam_rolling_chest_and_back,
     Stretches.foam_rolling_glutes,
     Stretches.foam_rolling_quads,
@@ -30,13 +33,19 @@ class Runner:
         # for now just adds a single class
         StackBuilder(self.current_workout_set).run()
 
+    def _empty_stack_from_sys_flag(self):
+        if sys.argv is None:
+            return
+        if '--empty' in sys.argv:
+            self._empty_stack()
+
     def _empty_stack(self):
         StackBuilder(self.current_workout_set)._empty()
 
     def run(self):
-        # self._run_user_input()
+        self._run_user_input()
         self._add_classes()
-        # self._empty_stack()
+        self._empty_stack_from_sys_flag()
 
 
 runner = Runner()

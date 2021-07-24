@@ -1,1 +1,1 @@
-python3 peloton/runner.py
+python3 peloton/runner.py "$@"
