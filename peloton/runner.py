@@ -1,9 +1,17 @@
 from ride_ids import Stretches
 from stack.stack_builder import StackBuilder
 from services.user_input import UserInput
-# from workout.current_workout_set import current_workout_set
 
-current_workout_set = [Stretches.full_body_stretch_1]
+current_workout_set = [
+    Stretches.full_body_stretch_1,
+    Stretches.foam_rolling_chest_and_back,
+    Stretches.foam_rolling_glutes,
+    Stretches.foam_rolling_quads,
+    Stretches.foam_rolling_hamstrings,
+    Stretches.foam_rolling_calves,
+    Stretches.full_body_stretch_6,
+]
+
 
 class Runner:
     def __init__(self):
@@ -22,7 +30,6 @@ class Runner:
         # for now just adds a single class
         StackBuilder(self.current_workout_set).run()
 
-
     def run(self):
         # self._run_user_input()
         self._add_classes()
@@ -30,12 +37,6 @@ class Runner:
 
 runner = Runner()
 runner.run()
-
-
-# test adding class
-# full_body_stretch_classes = adrian_williams.FullBodyStretchClass().get_class_ids()
-# stack = StackBuilder([full_body_stretch_classes[-1]])
-# stack.run()
 
 
 # Questions

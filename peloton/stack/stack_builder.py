@@ -53,5 +53,3 @@ class StackBuilder:
         if self.class_ids is not None:
             for class_id in self.class_ids:
                 self._add_class(class_id)
-        # todobison print stack
-        # self._get()
