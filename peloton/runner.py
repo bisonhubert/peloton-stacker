@@ -30,9 +30,13 @@ class Runner:
         # for now just adds a single class
         StackBuilder(self.current_workout_set).run()
 
+    def _empty_stack(self):
+        StackBuilder(self.current_workout_set)._empty()
+
     def run(self):
         # self._run_user_input()
         self._add_classes()
+        # self._empty_stack()
 
 
 runner = Runner()
