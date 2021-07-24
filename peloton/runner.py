@@ -42,17 +42,15 @@ class Runner:
         # for now just adds a single class
         StackBuilder(self.current_workout_set).run()
 
-    def _empty_stack_from_sys_flag(self):
-        if '--empty' in sys.argv:
-            self._empty_stack()
-
     def _empty_stack(self):
         StackBuilder(self.current_workout_set)._empty()
 
     def run(self):
-        self._set_week_and_day()
-        self._add_classes()
-        self._empty_stack_from_sys_flag()
+        if '--empty' in sys.argv:
+            self._empty_stack()
+        else:
+            self._set_week_and_day()
+            self._add_classes()
 
 
 runner = Runner()
