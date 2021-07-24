@@ -14,3 +14,25 @@ class Stretches:
     foam_rolling_quads = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI2NmM3ZGRkNGZjMzg0ZmZiYTc1YzY0ZjZlNDQ5MjZjZCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
     foam_rolling_glutes = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI1MWNkNTFhMTY2ODE0NmU5YmFkZWUyMzUzOGFmNTVjMCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
     foam_rolling_calves = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIwYTIzNTFhYTViNjA0ODIzOTdhMDA0ZGZhYjI2OWRiYSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+
+
+class Cycling:
+    # Build Your Power Zones
+    # todobison this should actually be a program
+    # which would make this a set of week and day objects for n number of classes
+    week_1_day_1 = ""
+    week_1_day_2 = ""
+    week_1_day_3 = ""
+    week_2_day_1 = ""
+    week_2_day_2 = ""
+    week_2_day_3 = ""
+    week_3_day_1 = ""
+    week_3_day_2 = ""
+    week_3_day_3 = ""
+    week_4_day_1 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI0YzIxMTBkZDRkZTc0YzliOWE0YTRlOTE3NjUwMTcwMiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+    week_4_day_2 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI0N2FkMzc2NGZiZmI0Nzc0OTY3OTU4ODc0NDY1YmVlNCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+    week_4_day_3 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIxYjc2OGVlMzc2YzU0NmFlOTI0OTNkODMwMWVlZWM4NSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+    week_5_day_1 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI3MjVkNjE4NTE2Njc0Zjc1ODFkNGQ1NjZmZTNmMDY1NSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+    week_5_day_2 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI0MzU1Y2JmODczNDY0OGMxYTI2YzJmNmQzNTQwMzVjNSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+    week_5_day_3_part_1 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIxZWFiZjcwYjIwNzQ0ZjQ4Yjk5MjU5ZjkzODg5Y2VkNSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+    week_5_day_3_part_2 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI0ZDMwMmJlZjQ5NTc0MTE4YTA3MTI2OWJlZDM4YmQzMCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
