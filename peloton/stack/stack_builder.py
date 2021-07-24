@@ -42,17 +42,11 @@ class StackBuilder:
         payload = self._get_payload(Operation.ADD, class_id)
         self.session.post(self.ENDPOINT, json=payload)
 
-    #
-    # def _set_stack(self):
-    #     payload = self._get_payload(Operation.VIEW)
-    #     data = self.session.post(self.ENDPOINT, json=payload)
-    #     import pdb;pdb.set_trace()
-    #     self.stack = data.text
-    #     return data
-    #
-    # def _print_stack(self):
-    #     self._set_stack()
-    #     pprint(self.stack)
+    def _get(self):
+        pass
+
+    def _remove_class(self):
+        pass
 
     def run(self):
         self._login()
@@ -60,4 +54,4 @@ class StackBuilder:
             for class_id in self.class_ids:
                 self._add_class(class_id)
         # todobison print stack
-        # self._print_stack()
+        # self._get()

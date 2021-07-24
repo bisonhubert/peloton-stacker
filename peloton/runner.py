@@ -1,6 +1,10 @@
+from graphql_ids import AdrianWilliams
+from ride import Ride
 from stack.stack_builder import StackBuilder
 from user_input import UserInput
-from workout.current_workout_set import current_workout_set
+# from workout.current_workout_set import current_workout_set
+
+current_workout_set = [Ride(AdrianWilliams.full_body_stretch_1, AdrianWilliams.slug).graphql_id]
 
 class Runner:
     def __init__(self):
@@ -14,15 +18,15 @@ class Runner:
         self.day = ui.day
         self.week = ui.week
 
-    def _get_workout_set(self):
-        # this acts as a cartridge with preset workouts
-        # pre-compiled sets are recorded in workout/constants.py
-        pass
+    def _add_classes(self):
+        # this should eventually load workout_set as JSON or a Python dict
+        # for now just adds a single class
+        StackBuilder(self.current_workout_set).run()
 
 
     def run(self):
         # self._run_user_input()
-        pass
+        self._add_classes()
 
 
 runner = Runner()
