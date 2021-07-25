@@ -1,17 +1,17 @@
 import pytest
 
 from peloton.workout.day import Day
-from peloton.workout.ride import Ride
+from peloton.ride.ride import Ride
 
 
 @pytest.fixture
 def ride_1():
-    return Ride("test-token-1")
+    return Ride(slug="test-ride-1", token="test-token-1")
 
 
 @pytest.fixture
 def ride_2():
-    return Ride("test-token-2")
+    return Ride(slug="test-ride-2", token="test-token-2")
 
 
 @pytest.fixture
