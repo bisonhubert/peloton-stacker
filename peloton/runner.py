@@ -1,56 +1,8 @@
 import sys
 
-from ride_ids import Cycling, Stretches
-from stack.stack_builder import StackBuilder
+from seed.sets import current_workout_set
 from services.user_input import UserInput
-
-current_workout_set = [
-    Stretches.full_body_stretch_1,
-    Cycling.week_4_day_1,
-    Stretches.foam_rolling_chest_and_back,
-    Stretches.foam_rolling_glutes,
-    Stretches.foam_rolling_quads,
-    Stretches.foam_rolling_hamstrings,
-    Stretches.foam_rolling_calves,
-    Stretches.full_body_stretch_6,
-]
-
-# BYPZ
-# current_workout_set = [
-#     Cycling.week_4_day_1,
-#     Cycling.week_4_day_2,
-#     Cycling.week_4_day_3,
-#     Cycling.week_5_day_1,
-#     Cycling.week_5_day_2,
-#     Cycling.week_5_day_3_part_1,
-#     Cycling.week_5_day_3_part_2,
-# ]
-
-# 5min Cool Down Rides
-# current_workout_set = [
-#     Cycling.ally_5_min_1,
-#     Cycling.ally_5_min_2,
-#     Cycling.ben_5_min,
-#     Cycling.emma_5_min,
-#     Cycling.robin_5_min,
-#     Cycling.cody_5_min,
-#     Cycling.dennis_5_min,
-#     Cycling.tunde_5_min_1,
-#     Cycling.tunde_5_min_2,
-# ]
-
-# 10min Cool Down Rides
-# current_workout_set = [
-#     Cycling.alex_10_min,
-#     Cycling.dennis_10_min,
-#     Cycling.ally_10_min,
-#     Cycling.robin_10_min,
-#     Cycling.olivia_10_min,
-#     Cycling.hannah_10_min,
-#     Cycling.tunde_10_min_1,
-#     Cycling.tunde_10_min_2,
-# ]
-
+from stack.stack_builder import StackBuilder
 
 class Runner:
     def __init__(self):

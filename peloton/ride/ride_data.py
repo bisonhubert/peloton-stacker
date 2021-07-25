@@ -1,28 +1,86 @@
 class Stretches:
-    # Adrian Williams stretching
-    full_body_stretch_1 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJkZGM1MTlhZjMxMWU0ZTg3YmExNjY5Zjk3OTdhMjk0OSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    full_body_stretch_2 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIxZTNjZWY3NGZkOTM0ZjdjYmM4NGY0MWFhZWZkNDQ2MiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    full_body_stretch_3 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIyYmYzOTIwMTUwZDQ0NDg1YjAyMmY3NTQ4YzIwZGI4NyIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    full_body_stretch_4 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIxZjM3M2QxMWI4MWM0YWZlOGI2MjdmY2E2OTRhMjhlNSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    full_body_stretch_5 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI4ZjgwZDZjZmFkMmI0YjEzOGE0NjljY2UxMDZmZWExOSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    full_body_stretch_6 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI5N2RmMzdmYzkxMGE0ZWNmYjZkYjEwYzJiOTliNWI5OSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    full_body_stretch_7 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIxZGY4YTViZjEzZDY0YWMyOGEyMTk4ZjU5Y2JjY2Y1YSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-
-    # Foam Rolling w/ Hannah Corbin
-    foam_rolling_hamstrings = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI1NGY1MjBlYjZjODU0NTFjYjE0ZTk0NjNlZTcyYzRmNSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    foam_rolling_chest_and_back = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIyNzlkMDdmYTc2Mzk0NzhkYjgwZjRkYTZmYTQ4NDRmYSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    foam_rolling_quads = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI2NmM3ZGRkNGZjMzg0ZmZiYTc1YzY0ZjZlNDQ5MjZjZCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    foam_rolling_glutes = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI1MWNkNTFhMTY2ODE0NmU5YmFkZWUyMzUzOGFmNTVjMCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    foam_rolling_calves = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIwYTIzNTFhYTViNjA0ODIzOTdhMDA0ZGZhYjI2OWRiYSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-
-    # 5min Post Ride Stretches
-    tunde = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI5OGRhZWY1NDNlNTI0M2ZmYmYxYmU4MzZiNTI1OWU0NiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    wilpers = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJmMDdiYmRjYjM2MDk0ZGFmYTYxYmQyNDY3Njk4ZDFkNCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    emma = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJjZWE5MTY2NTY1NGM0YWZjOGI5NDAyOGJjZjE0OTk2YyIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    ben = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJiYjQ4MmU0MzM0MWU0OGM5YjhkMjlmN2ViZjU5OGQzMiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    dennis = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIzNTJhY2MyMjBlM2M0MDNlYjI5ZWM4ZDNjYTFkYjA3YSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    cody = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJmYjQxYjZmMmU1YjQ0MjkwOWM0MGQ0ZjcxMjFlYzJiOSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    robin = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJlYmQwNjkwNTUyNzg0ZmI3YWE3NzdlNTAxY2QwMTU0NiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+    FULL_BODY_10_MIN = [
+        {
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJkZGM1MTlhZjMxMWU0ZTg3YmExNjY5Zjk3OTdhMjk0OSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+            "slug": "aw-fbs-1",
+        },
+        {
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIxZTNjZWY3NGZkOTM0ZjdjYmM4NGY0MWFhZWZkNDQ2MiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+            "slug": "aw-fbs-2",
+        },
+        {
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIyYmYzOTIwMTUwZDQ0NDg1YjAyMmY3NTQ4YzIwZGI4NyIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+            "slug": "aw-fbs-3",
+        },
+        {
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIxZjM3M2QxMWI4MWM0YWZlOGI2MjdmY2E2OTRhMjhlNSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+            "slug": "aw-fbs-4",
+        },
+        {
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI4ZjgwZDZjZmFkMmI0YjEzOGE0NjljY2UxMDZmZWExOSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+            "slug": "aw-fbs-5",
+        },
+        {
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI5N2RmMzdmYzkxMGE0ZWNmYjZkYjEwYzJiOTliNWI5OSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+            "slug": "aw-fbs-6",
+        },
+        {
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIxZGY4YTViZjEzZDY0YWMyOGEyMTk4ZjU5Y2JjY2Y1YSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+            "slug": "aw-fbs-7",
+        },
+    ]
+    FOAM_ROLLING = [
+        {
+            "slug": "hc-fr-chest-back",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIyNzlkMDdmYTc2Mzk0NzhkYjgwZjRkYTZmYTQ4NDRmYSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "hc-fr-glutes",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI1MWNkNTFhMTY2ODE0NmU5YmFkZWUyMzUzOGFmNTVjMCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "hc-fr-quads",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI2NmM3ZGRkNGZjMzg0ZmZiYTc1YzY0ZjZlNDQ5MjZjZCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "hc-fr-hamstrings",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI1NGY1MjBlYjZjODU0NTFjYjE0ZTk0NjNlZTcyYzRmNSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "hc-fr-calves",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIwYTIzNTFhYTViNjA0ODIzOTdhMDA0ZGZhYjI2OWRiYSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+    ]
+    POST_RIDE_5_MIN = [
+        {
+            "slug": "tunde-prs-5min",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI5OGRhZWY1NDNlNTI0M2ZmYmYxYmU4MzZiNTI1OWU0NiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "wilpers-prs-5min",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJmMDdiYmRjYjM2MDk0ZGFmYTYxYmQyNDY3Njk4ZDFkNCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "emma-prs-5min",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJjZWE5MTY2NTY1NGM0YWZjOGI5NDAyOGJjZjE0OTk2YyIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "ben-prs-5min",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJiYjQ4MmU0MzM0MWU0OGM5YjhkMjlmN2ViZjU5OGQzMiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "dennis-prs-5min",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIzNTJhY2MyMjBlM2M0MDNlYjI5ZWM4ZDNjYTFkYjA3YSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "cody-prs-5min",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJmYjQxYjZmMmU1YjQ0MjkwOWM0MGQ0ZjcxMjFlYzJiOSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "robin-prs-5min",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJlYmQwNjkwNTUyNzg0ZmI3YWE3NzdlNTAxY2QwMTU0NiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+    ]
 
 
 class Cycling:
@@ -56,7 +114,7 @@ class Cycling:
     dennis_5_min = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJmNTlkOTFmOWY1NDY0ZWRlYTVkMjM1NzFlM2NjMjM3NCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
     tunde_5_min_1 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJhOTFjYTVmM2UyMGM0YWM2OTI1MDE3OTkwMzZlZTBjYiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
     tunde_5_min_2 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI0MTI3MDI5OWJmYWM0Y2QzOGIzMGE1MTJiMDYzMTI3NyIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
-    
+
     # 10min Cool Down Rides
     alex_10_min = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIyN2RlOTliOTYwNmQ0MTE0YjY5NjgyOTk3ZGFhNjJjOSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
     dennis_10_min = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJmNzhjY2NmNmMzN2U0OTBiYjliZjhlZWY2MDhhM2Y2NCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
