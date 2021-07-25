@@ -8,6 +8,7 @@ from snapshottest import Snapshot
 snapshots = Snapshot()
 
 snapshots['test_week ride=test-token as dict'] = {
+    'slug': 'test-ride-1',
     'token': 'test-token'
 }
 
