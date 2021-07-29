@@ -1,8 +1,11 @@
 def _get_token(ride_token):
-    ride = list(filter(lambda x: x.get('slug') == ride_token, Stretches.FULL_BODY_10_MIN))
+    ride = list(
+        filter(lambda x: x.get("slug") == ride_token, Stretches.FULL_BODY_10_MIN)
+    )
     if len(ride) == 0:
         return
-    return ride[0].get('token')
+    return ride[0].get("token")
+
 
 class Stretches:
     FULL_BODY_10_MIN = [
@@ -138,17 +141,44 @@ class Strength:
     AW_DAY_1 = [
         {
             "slug": "aw-d1-warmup",
-            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJkMTllMjdhMWQ3YWE0YTY3Yjc3MjRkMWM4MTc1OTZlYSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJkMTllMjdhMWQ3YWE0YTY3Yjc3MjRkMWM4MTc1OTZlYSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
         },
         {
             "slug": "aw-d1-lift",
-            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI3YjA4YzNjNjNmNTE0ZjhlOWU3MWNjOTQyMjJhYWQzMCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI3YjA4YzNjNjNmNTE0ZjhlOWU3MWNjOTQyMjJhYWQzMCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {"slug": "aw-d1-stretch", "token": _get_token("aw-fbs-3")},
+    ]
+    AW_DAY_2 = [
+        {
+            "slug": "aw-d2-warmup",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJlOTU0NWFiMTczYjg0MWI2OWE0NDI1ZDUyODRiMDg2YyIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
         },
         {
-            "slug": "aw-d1-stretch",
-            "token": _get_token('aw-fbs-3')
-        }
+            "slug": "aw-d2-hiit",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJmNDM0N2E4NDk1ZDc0ZjAzYTE0NWVkOGUwNTdjOTgyNSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {"slug": "aw-d2-stretch", "token": _get_token("aw-fbs-3")},
     ]
-    AW_DAY_2 = []
-    AW_DAY_3 = []
-    AW_DAY_4 = []
+    AW_DAY_3 = [
+        {
+            "slug": "aw-d3-warmup",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIyYTlmNTQ2OGJjNjc0Y2ZjYjAzMGU2Nzg5YjI3ZjJmMiIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "aw-d3-lift",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICIzYzUyYzgyMDM1ZDY0YmI0YTAwOTQ2OGRjODY5MmY2NSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {"slug": "aw-d3-stretch", "token": _get_token("aw-fbs-5")},
+    ]
+    AW_DAY_4 = [
+        {
+            "slug": "aw-d4-warmup",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJlOTU0NWFiMTczYjg0MWI2OWE0NDI1ZDUyODRiMDg2YyIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {
+            "slug": "aw-d4-hiit",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJmOWQyMTIwYTg5YjA0YWE4OTYzMDhhNTExNTE1ZjAxNCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9",
+        },
+        {"slug": "aw-d4-stretch", "token": _get_token("aw-fbs-5")},
+    ]
