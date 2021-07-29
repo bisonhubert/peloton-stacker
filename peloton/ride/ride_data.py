@@ -1,3 +1,9 @@
+def _get_token(ride_token):
+    ride = list(filter(lambda x: x.get('slug') == ride_token, Stretches.FULL_BODY_10_MIN))
+    if len(ride) == 0:
+        return
+    return ride[0].get('token')
+
 class Stretches:
     FULL_BODY_10_MIN = [
         {
@@ -124,3 +130,25 @@ class Cycling:
     hannah_10_min = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI3ZmI4YzY2MWM2Mjk0YTFjYTFkNGM2NDc3MzAzNjNiOCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
     tunde_10_min_1 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJiMjAyNDk0M2M5YTI0MTVkOGEwYWQwZTlkMTk4ZWM3NCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
     tunde_10_min_2 = "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJjN2I5ZjUzYjQzMGY0OTdmODE2NjNmNTU1N2IyNTAwOSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+
+
+class Strength:
+    # Adrian Williams
+    # https://www.pelobuddy.com/monthly-strength-stack-june-adrian-williams/
+    AW_DAY_1 = [
+        {
+            "slug": "aw-d1-warmup",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICJkMTllMjdhMWQ3YWE0YTY3Yjc3MjRkMWM4MTc1OTZlYSIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+        },
+        {
+            "slug": "aw-d1-lift",
+            "token": "eyJob21lX3BlbG90b25faWQiOiBudWxsLCAicmlkZV9pZCI6ICI3YjA4YzNjNjNmNTE0ZjhlOWU3MWNjOTQyMjJhYWQzMCIsICJzdHVkaW9fcGVsb3Rvbl9pZCI6IG51bGwsICJ0eXBlIjogIm9uX2RlbWFuZCJ9"
+        },
+        {
+            "slug": "aw-d1-stretch",
+            "token": _get_token('aw-fbs-3')
+        }
+    ]
+    AW_DAY_2 = []
+    AW_DAY_3 = []
+    AW_DAY_4 = []

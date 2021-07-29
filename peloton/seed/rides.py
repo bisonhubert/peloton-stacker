@@ -1,13 +1,28 @@
-from ride.ride_data import Cycling, Stretches
+from ride.ride_data import Cycling, Strength, Stretches
 from ride.ride import Ride
 
 def _make_ride(ride_data):
     return Ride(slug=ride_data.get('slug'), token=ride_data.get('token'))
 
+def _get_rides(rides=None):
+    if rides is None:
+        return None
+    return [_make_ride(ride_data) for ride_data in rides]
+
 class StretchRides:
     FULL_BODY = [_make_ride(ride_data) for ride_data in Stretches.FULL_BODY_10_MIN]
     FOAM_ROLLING = [_make_ride(ride_data) for ride_data in Stretches.FOAM_ROLLING]
     POST_RIDE_5_MIN = [_make_ride(ride_data) for ride_data in Stretches.POST_RIDE_5_MIN]
+
+class StrengthRides:
+    AW_DAY_1 = _get_rides(Strength.AW_DAY_1)
+    AW_DAY_2 = None
+    AW_DAY_3 = None
+    AW_DAY_4 = None
+    # unmade
+    # AW_DAY_2 = _get_rides(Strength.AW_DAY_2)
+    # AW_DAY_3 = _get_rides(Strength.AW_DAY_3)
+    # AW_DAY_4 = _get_rides(Strength.AW_DAY_4)
 
 # BYPZ
 # current_workout_set = [

@@ -28,7 +28,7 @@ class Runner:
     def _add_classes(self):
         # this should eventually load workout_set as JSON or a Python dict
         # for now just adds a single class
-        StackBuilder(self.current_workout_set).run()
+        StackBuilder(workout_set=self.current_workout_set, day=self.day, week=self.week).run()
 
     def _empty_stack(self):
         StackBuilder(self.current_workout_set)._empty()
