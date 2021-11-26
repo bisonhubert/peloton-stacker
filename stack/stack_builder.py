@@ -1,17 +1,15 @@
 import requests
 
-from peloton.account import Account
-from peloton.stack.constants import Api, Operation, Queries
-
+from stack.account import Account
+from stack.constants import Api, Operation, Queries
+from seeds.crush_your_core import CrushYourCore
+from seeds.rides import AWS, CYC
 
 class StackBuilder:
-    # def __init__(self, workout_set=None, day=None, week=None):
-    def __init__(self):
+    def __init__(self, day=None):
+        self.day = day
         self.session = None
-        self.ride_tokens = None
-        # self.workout_set = workout_set
-        # self.day = day
-        # self.week = week
+        self.rides = None
         self._login()
 
     def _get_payload(self, operation, ride_token=None):
@@ -37,28 +35,25 @@ class StackBuilder:
         s.post("https://api.onepeloton.com/auth/login", json=payload)
         self.session = s
 
-    def _add_ride(self, payload=None):
-        # payload = self._get_payload(Operation.ADD, ride_token)
-        self.session.post(Api.ENDPOINT, json=payload)
+    def _add_rides(self, payload=None):
+        for payload in self.rides:
+            self.session.post(Api.ENDPOINT, json=payload)
 
     def _empty(self):
         payload = self._get_payload(Operation.EMPTY)
         resp = self.session.post(Api.ENDPOINT, json=payload)
 
-    def _set_ride_tokens(self):
-        if self.workout_set is not None:
-            self.ride_tokens = self.workout_set.get_ride_tokens(week=self.week, day=self.day)
+    def _set_rides(self):
+        rides = []
+        cyc = CYC.get_ride(day=self.day)
+        if cyc is not None:
+            rides.append(cyc)
+        aws = AWS.get_ride(day=self.day)
+        if aws is not None:
+            rides.append(aws)
+        self.rides = rides
 
-    def _get(self):
-        pass
-
-    def _remove_ride(self):
-        pass
-
-    def run(self, payload=None):
-        if payload is not None:
-            self._add_ride(payload=payload)
-        # self._set_ride_tokens()
-        # if self.ride_tokens is not None:
-        #     for ride_token in self.ride_tokens:
-        #         self._add_ride(ride_token)
+    def run(self):
+        if self.day is not None:
+            self._set_rides()
+            self._add_rides()
