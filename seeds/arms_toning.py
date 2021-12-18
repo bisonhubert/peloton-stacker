@@ -5,8 +5,8 @@ ARMS_TONING = {"operationName":"AddClassToStack","variables":{"input":{"pelotonC
 class ArmsToning(GetRide):
     DAY_1 = ARMS_TONING
     DAY_2 = None
-    DAY_3 = ARMS_TONING
-    DAY_4 = None
+    DAY_3 = None
+    DAY_4 = ARMS_TONING
     DAY_5 = None
     DAY_6 = ARMS_TONING
     DAY_7 = None
