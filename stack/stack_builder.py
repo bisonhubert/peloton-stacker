@@ -46,7 +46,7 @@ class StackBuilder:
     def _set_rides(self):
         rides = []
         # arms toning on Monday, Thursday, Saturday
-        seeds = [CD, PRS, AT, CYC, AWS]
+        seeds = [CD, PRS, CYC, AWS]
         for seed in seeds:
             ride = seed.get_ride(day=self.day)
             if ride is not None:
