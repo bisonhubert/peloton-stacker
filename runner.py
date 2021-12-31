@@ -24,6 +24,10 @@ class Runner:
     def run(self):
         if "--empty" in sys.argv:
             self._empty_stack()
+        # if using --empty-only flag, empty stack
+        # otherwise, add classes
+        if "--empty-only" in sys.argv:
+            self._empty_stack()
         else:
             self._set_day()
             self._add_classes()
