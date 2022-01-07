@@ -5,6 +5,11 @@ from stack.constants import Api, Operation, Queries
 from seeds.crush_your_core import CrushYourCore
 from seeds.rides import AT, AWS, CD, CYC, PRS
 
+# cool down and post ride stretch
+SEEDS = [CD, PRS]
+# cool down, post ride stretch, core, and adrian williams stretch
+# SEEDS = [CD, PRS, CYC, AWS]
+
 class StackBuilder:
     def __init__(self, day=None):
         self.day = day
@@ -45,9 +50,7 @@ class StackBuilder:
 
     def _set_rides(self):
         rides = []
-        # arms toning on Monday, Thursday, Saturday
-        seeds = [CD, PRS, CYC, AWS]
-        for seed in seeds:
+        for seed in SEEDS:
             ride = seed.get_ride(day=self.day)
             if ride is not None:
                 rides.append(ride)
