@@ -3,7 +3,7 @@ import datetime as dt
 from pathlib import Path
 
 from stack.client import Client, class_id_from
-from stack.plan import active_cycle, load_cycle, week_monday, week_slots
+from stack.plan import active_block, load_block, week_monday, week_slots
 from stack.resolve import resolve, first_name
 
 ROOT = Path(__file__).parent
@@ -17,19 +17,23 @@ def print_stack(stack):
         print(f"  {item['playOrder']}. {pelo['title']} ({pelo['classId']})")
 
 
-def week(dry_run):
+def week(dry_run, week_number):
     monday = week_monday(dt.datetime.now(PST).date())
-    cycles = [load_cycle(p, ROOT / "programs") for p in sorted((ROOT / "cycles").glob("*.toml"))]
-    cycle = active_cycle(cycles, monday)
+    blocks = [load_block(p, ROOT / "programs") for p in sorted((ROOT / "blocks").glob("*.toml"))]
+    block = active_block(blocks, monday)
+    if week_number:
+        if not 1 <= week_number <= block.weeks:
+            raise SystemExit(f"--week must be 1-{block.weeks} for {block.name}")
+        monday = block.start + dt.timedelta(weeks=week_number - 1)
+    week_number = block.week_of(monday)
     client = Client()
-    week_number = cycle.week_of(monday)
     plan = resolve(
-        week_slots(cycle, week_number),
+        week_slots(block, week_number),
         lambda params: client.search_classes(params, limit=50),
         client.ride,
     )
     names = client.instructor_names()
-    print(f"{cycle.name}, week {week_number} of {cycle.weeks} (starting {monday}):")
+    print(f"{block.name}, week {week_number} of {block.weeks} (starting {monday}):")
     for slot, class_id, title, instructor_id in plan:
         instructor = first_name(names[instructor_id])
         print(f"  {slot.day.title():<10} {title} with {instructor} ({class_id})")
@@ -46,13 +50,14 @@ def main():
     commands = parser.add_subparsers(dest="command", required=True)
     week_parser = commands.add_parser("week")
     week_parser.add_argument("--dry-run", action="store_true")
+    week_parser.add_argument("--week", type=int)
     add_parser = commands.add_parser("add")
     add_parser.add_argument("class_url_or_id")
     commands.add_parser("empty")
     args = parser.parse_args()
 
     if args.command == "week":
-        week(args.dry_run)
+        week(args.dry_run, args.week)
     elif args.command == "add":
         print_stack(Client().add_class(class_id_from(args.class_url_or_id)))
     elif args.command == "empty":

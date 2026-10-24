@@ -34,7 +34,7 @@ class Program:
 
 
 @dataclass
-class Cycle:
+class Block:
     name: str
     start: dt.date
     weeks: int
@@ -67,31 +67,31 @@ def load_program(path):
     return program
 
 
-def load_cycle(path, programs_dir):
+def load_block(path, programs_dir):
     data = tomllib.loads(Path(path).read_text())
     if data["start"].weekday() != 0:
         raise ValueError(f"{path}: start {data['start']} is not a Monday")
     if not 1 <= data["weeks"] <= 6:
         raise ValueError(f"{path}: weeks must be 1-6")
     programs = [load_program(Path(programs_dir) / f"{p}.toml") for p in data["programs"]]
-    return Cycle(Path(path).stem, data["start"], data["weeks"], programs)
+    return Block(Path(path).stem, data["start"], data["weeks"], programs)
 
 
 def week_monday(today):
     return today - dt.timedelta(days=today.weekday())
 
 
-def active_cycle(cycles, monday):
-    for cycle in cycles:
-        if cycle.start <= monday < cycle.end:
-            return cycle
-    raise LookupError(f"No cycle covers the week of {monday}")
+def active_block(blocks, monday):
+    for block in blocks:
+        if block.start <= monday < block.end:
+            return block
+    raise LookupError(f"No block covers the week of {monday}")
 
 
-def week_slots(cycle, week):
+def week_slots(block, week):
     slots = []
     for day in DAYS:
-        for program in cycle.programs:
+        for program in block.programs:
             for workout in program.workouts_for(week):
                 if workout["day"] != day:
                     continue

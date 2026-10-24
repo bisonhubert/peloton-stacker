@@ -4,19 +4,19 @@ import unittest
 from pathlib import Path
 
 from stack.client import class_id_from, search_params_from, workout_id_from
-from stack.plan import Cycle, active_cycle, load_cycle, load_program, week_monday, week_slots
+from stack.plan import Block, active_block, load_block, load_program, week_monday, week_slots
 from stack.resolve import first_name, resolve
 
 ROOT = Path(__file__).parent.parent
 
 
 def load():
-    return load_cycle(ROOT / "cycles" / "tunde_bootcamp.toml", ROOT / "programs")
+    return load_block(ROOT / "blocks" / "2026_fall.toml", ROOT / "programs")
 
 
 def bootcamp_only():
     program = load_program(ROOT / "programs" / "tunde_bike_bootcamp.toml")
-    return Cycle("bootcamp", dt.date(2026, 10, 19), 1, [program])
+    return Block("bootcamp", dt.date(2026, 10, 19), 1, [program])
 
 
 def core_index(slot):
@@ -30,12 +30,12 @@ class TestPlan(unittest.TestCase):
         self.assertEqual(week_monday(dt.date(2026, 10, 25)), dt.date(2026, 10, 19))
         self.assertEqual(week_monday(dt.date(2026, 10, 26)), dt.date(2026, 10, 26))
 
-    def test_active_cycle(self):
-        cycle = load()
-        self.assertIs(active_cycle([cycle], dt.date(2026, 10, 19)), cycle)
-        self.assertEqual(cycle.week_of(dt.date(2026, 11, 23)), 6)
+    def test_active_block(self):
+        block = load()
+        self.assertIs(active_block([block], dt.date(2026, 10, 19)), block)
+        self.assertEqual(block.week_of(dt.date(2026, 11, 23)), 6)
         with self.assertRaises(LookupError):
-            active_cycle([cycle], dt.date(2026, 11, 30))
+            active_block([block], dt.date(2026, 11, 30))
 
     def test_week_slots(self):
         slots = week_slots(load(), 1)
@@ -56,9 +56,9 @@ class TestPlan(unittest.TestCase):
         )
 
     def test_rotation_wraps_across_weeks(self):
-        cycle = load()
+        block = load()
         weeks = {
-            week: [core_index(s) for s in week_slots(cycle, week) if not s.title]
+            week: [core_index(s) for s in week_slots(block, week) if not s.title]
             for week in range(1, 7)
         }
         self.assertEqual(
@@ -86,8 +86,8 @@ class TestPlan(unittest.TestCase):
                 '[[workouts]]\nday = "tuesday"\ntitle = "B Tue"\nclass = "b1"\n'
                 '[[workouts]]\nday = "sunday"\ntitle = "B Sun"\nclass = "b2"\n'
             )
-            (tmp / "cycle.toml").write_text('start = 2026-10-19\nweeks = 2\nprograms = ["a", "b"]\n')
-            slots = week_slots(load_cycle(tmp / "cycle.toml", tmp), 1)
+            (tmp / "block.toml").write_text('start = 2026-10-19\nweeks = 2\nprograms = ["a", "b"]\n')
+            slots = week_slots(load_block(tmp / "block.toml", tmp), 1)
         self.assertEqual([s.title for s in slots], ["A Mon", "B Tue", "A Sun", "B Sun"])
 
 
