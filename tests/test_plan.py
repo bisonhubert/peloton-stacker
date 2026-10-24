@@ -54,9 +54,11 @@ class TestPlan(unittest.TestCase):
                 ("monday", "Lower Body + Climb Ride"),
                 ("monday", "5 min cool down"),
                 ("tuesday", 1),
+                ("tuesday", "Weekday Rides"),
                 ("wednesday", "Upper Body + Progression Ride"),
                 ("wednesday", "5 min cool down"),
                 ("thursday", 2),
+                ("thursday", "Weekday Rides"),
                 ("friday", "Core + Conditioning Ride"),
                 ("friday", "5 min cool down"),
                 ("saturday", 3),
@@ -111,12 +113,12 @@ class TestWindow(unittest.TestCase):
         dates, count = self.days(dt.date(2026, 10, 19))
         self.assertEqual(count, 10)
         self.assertEqual(dates[0], dt.date(2026, 10, 19))
-        self.assertEqual(dates[-1], dt.date(2026, 10, 24))
+        self.assertEqual(dates[-1], dt.date(2026, 10, 23))
 
     def test_rolls_into_next_week(self):
         classes = window([load()], dt.date(2026, 10, 24), 10)
         self.assertEqual(len(classes), 10)
-        self.assertEqual(classes[-1][0], dt.date(2026, 10, 29))
+        self.assertEqual(classes[-1][0], dt.date(2026, 10, 28))
         self.assertEqual(classes[-1][1].week_of(dt.date(2026, 10, 26)), 5)
 
     def test_stops_at_block_end(self):
@@ -255,6 +257,25 @@ class TestResolve(unittest.TestCase):
 
         ids = [class_id for _, class_id, _, _ in resolve(week_slots(bootcamp_only(), 1), search, ride)]
         self.assertEqual(ids[1::2], ["new", "old1", "old2"])
+
+    def test_searched_workouts_prefer_new_classes(self):
+        searches = []
+
+        def search(params):
+            searches.append(params)
+            if params.get("has_workout") == "false":
+                return [{"id": "new", "title": "New", "instructor_id": "i"}]
+            return [{"id": "taken", "title": "Taken", "instructor_id": "i"}]
+
+        slots = [s for s in week_slots(load(), 1) if s.program == "Weekday Rides"]
+        resolved = resolve(slots, search, ride)
+        self.assertEqual(
+            [(s.day, title) for s, _, title, _ in resolved],
+            [("tuesday", "New"), ("thursday", "Taken")],
+        )
+        self.assertEqual(searches[0]["duration"], "1200")
+        self.assertEqual(searches[1]["duration"], "1800")
+        self.assertEqual(searches[1]["has_cycling_arms"], "false")
 
     def test_untitled_workouts_use_class_title(self):
         slots = [s for s in week_slots(load(), 1) if s.program == CORE]

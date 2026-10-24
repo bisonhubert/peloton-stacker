@@ -1,0 +1,9 @@
+name = "Weekday Rides"
+
+[[workouts]]
+day = "tuesday"
+search = "https://members.onepeloton.com/classes/cycling/?categorySlug=cycling&class_type_id=%5B%2259a49f882ea9475faa3110d50a8fb3f3%22%5D&has_workout=%5B%22false%22%5D&instructor_id=%5B%222e57092bee334c8c8dcb9fe16ba5308c%22%2C%22561f95c405734d8488ed8dcc8980d599%22%2C%22c9bd86e59b9b4f96981848467838aa9c%22%5D&duration=%5B%221200%22%5D&sort=original_air_time&desc=true"
+
+[[workouts]]
+day = "thursday"
+search = "https://members.onepeloton.com/classes/cycling/?categorySlug=cycling&class_type_id=%5B%2259a49f882ea9475faa3110d50a8fb3f3%22%5D&has_workout=%5B%22false%22%5D&instructor_id=%5B%222e57092bee334c8c8dcb9fe16ba5308c%22%2C%22561f95c405734d8488ed8dcc8980d599%22%2C%22c9bd86e59b9b4f96981848467838aa9c%22%5D&duration=%5B%221800%22%5D&has_cycling_arms=%5B%22false%22%5D&sort=original_air_time&desc=true"

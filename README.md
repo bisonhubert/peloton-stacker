@@ -77,6 +77,18 @@ title = "5 min cool down"
 search = "https://members.onepeloton.com/classes/cycling?..."
 ```
 
+A workout or supplement can use `search` with a Peloton filter URL instead of a fixed `class`. It picks the newest class I haven't taken, falls back to ones I have, and never picks the same class twice in one stack. Without a `title` it shows the class's own title.
+
+```toml
+name = "Weekday Rides"
+
+[[workouts]]
+day = "tuesday"
+search = "https://members.onepeloton.com/classes/cycling/?..."
+```
+
+Programs stack in the order the block lists them, so on Tuesday Weekday Rides comes after Crush Your Core.
+
 Rotating classes, picks up where last week left off and wraps around:
 
 ```toml
