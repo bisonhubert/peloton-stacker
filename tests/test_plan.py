@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 from stack.client import class_id_from, search_params_from, workout_id_from
-from stack.plan import Block, active_block, load_block, load_program, pick, week_monday, week_slots
+from stack.plan import Block, active_block, load_block, load_program, pick, week_monday, week_slots, window
 from stack.resolve import first_name, resolve
 
 ROOT = Path(__file__).parent.parent
@@ -100,6 +100,37 @@ class TestPlan(unittest.TestCase):
             (tmp / "block.toml").write_text('start = 2026-10-19\nweeks = 2\nprograms = ["a", "b"]\n')
             slots = week_slots(load_block(tmp / "block.toml", tmp), 1)
         self.assertEqual([s.title for s in slots], ["A Mon", "B Tue", "A Sun", "B Sun"])
+
+
+class TestWindow(unittest.TestCase):
+    def days(self, today, limit=10):
+        classes = window([load()], today, limit)
+        return [date for date, _, _ in classes], len(classes)
+
+    def test_fills_whole_days_up_to_the_limit(self):
+        dates, count = self.days(dt.date(2026, 10, 19))
+        self.assertEqual(count, 10)
+        self.assertEqual(dates[0], dt.date(2026, 10, 19))
+        self.assertEqual(dates[-1], dt.date(2026, 10, 24))
+
+    def test_rolls_into_next_week(self):
+        classes = window([load()], dt.date(2026, 10, 24), 10)
+        self.assertEqual(len(classes), 10)
+        self.assertEqual(classes[-1][0], dt.date(2026, 10, 29))
+        self.assertEqual(classes[-1][1].week_of(dt.date(2026, 10, 26)), 5)
+
+    def test_stops_at_block_end(self):
+        dates, count = self.days(dt.date(2026, 11, 7))
+        self.assertEqual(count, 4)
+        self.assertEqual(dates[-1], dt.date(2026, 11, 8))
+
+    def test_no_block_today(self):
+        with self.assertRaises(LookupError):
+            window([load()], dt.date(2026, 11, 9), 10)
+
+    def test_day_bigger_than_limit(self):
+        with self.assertRaises(ValueError):
+            window([load()], dt.date(2026, 10, 19), 1)
 
 
 class TestShuffle(unittest.TestCase):

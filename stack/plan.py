@@ -4,6 +4,7 @@ import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
 
+STACK_LIMIT = 10
 DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
 
@@ -139,3 +140,23 @@ def week_slots(block, week):
                         Slot(day, program.name, supplement["title"], search_url=supplement["search"])
                     )
     return slots
+
+
+def window(blocks, today, limit):
+    classes = []
+    date = today
+    while True:
+        try:
+            block = active_block(blocks, week_monday(date))
+        except LookupError:
+            if date > today:
+                return classes
+            raise
+        day = DAYS[date.weekday()]
+        slots = [s for s in week_slots(block, block.week_of(week_monday(date))) if s.day == day]
+        if len(classes) + len(slots) > limit:
+            if date > today:
+                return classes
+            raise ValueError(f"{date} has {len(slots)} classes, more than the {limit} a stack holds")
+        classes += [(date, block, slot) for slot in slots]
+        date += dt.timedelta(days=1)
