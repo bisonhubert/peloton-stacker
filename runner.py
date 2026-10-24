@@ -14,7 +14,7 @@ def print_stack(stack):
     print(f"Stack has {stack['numClasses']} classes:")
     for item in stack["userStack"]["stackedClassList"]:
         pelo = item["pelotonClass"]
-        print(f"  {item['playOrder']}. {pelo['title']} ({pelo['classId']})")
+        print(f"  {item['playOrder'] + 1}. {pelo['title']} ({pelo['classId']})")
 
 
 def week(dry_run, week_number):
