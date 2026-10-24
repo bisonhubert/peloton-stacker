@@ -1,0 +1,20 @@
+name = "Tunde Oyeneyin Bike Bootcamp"
+
+[[workouts]]
+day = "monday"
+title = "Lower Body + Climb Ride"
+class = "https://members.onepeloton.com/profile/workouts/b9cc6607a09d481fa40b41ade2d0ffaf?modal=classDetailsModal&classId=5784b01e862b416390307db97aa05d57"
+
+[[workouts]]
+day = "wednesday"
+title = "Upper Body + Progression Ride"
+class = "https://members.onepeloton.com/profile/workouts/62faf934b84844e2b741c9d699f1f416?modal=classDetailsModal&classId=dfa893187ca94f28b0fbb3b20e7cc2c2"
+
+[[workouts]]
+day = "friday"
+title = "Core + Conditioning Ride"
+class = "https://members.onepeloton.com/profile/workouts/0ebaf29c751f4627824f9c8cb74848dd?modal=classDetailsModal&classId=d8f891498789414ea288764921b98538"
+
+[[supplements]]
+title = "5 min cool down"
+search = "https://members.onepeloton.com/classes/cycling/?categorySlug=cycling&duration=%5B%22300%22%5D&class_type_id=%5B%22a1fa617f3ba14c0a8c25468d5c88b3ea%22%5D&instructor_id=%5B%222e57092bee334c8c8dcb9fe16ba5308c%22%2C%22c9bd86e59b9b4f96981848467838aa9c%22%2C%22561f95c405734d8488ed8dcc8980d599%22%2C%22f6f2d613dc344e4bbf6428cd34697820%22%5D&has_workout=%5B%22false%22%5D&sort=original_air_time&desc=true"

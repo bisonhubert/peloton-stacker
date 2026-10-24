@@ -1,37 +1,60 @@
+import argparse
 import datetime as dt
-import sys
-# import pytz
-# python3 -m pip install pytz
+from pathlib import Path
 
-from stack.stack_builder import StackBuilder
+from stack.client import Client, class_id_from
+from stack.plan import active_cycle, load_cycle, week_monday, week_slots
+from stack.resolve import resolve, first_name
 
-class Runner:
-    PST = dt.timezone(dt.timedelta(hours=-8))
-
-    def __init__(self):
-        self.day = None
-
-    def _set_day(self):
-        now = dt.datetime(1,1,1).now(self.PST)
-        self.day = now.weekday()
-
-    def _add_classes(self):
-        StackBuilder(day=self.day).run()
-
-    def _empty_stack(self):
-        StackBuilder()._empty()
-
-    def run(self):
-        if "--empty" in sys.argv:
-            self._empty_stack()
-        # if using --empty-only flag, empty stack
-        # otherwise, add classes
-        if "--empty-only" in sys.argv:
-            self._empty_stack()
-        else:
-            self._set_day()
-            self._add_classes()
+ROOT = Path(__file__).parent
+PST = dt.timezone(dt.timedelta(hours=-8))
 
 
-runner = Runner()
-runner.run()
+def print_stack(stack):
+    print(f"Stack has {stack['numClasses']} classes:")
+    for item in stack["userStack"]["stackedClassList"]:
+        pelo = item["pelotonClass"]
+        print(f"  {item['playOrder']}. {pelo['title']} ({pelo['classId']})")
+
+
+def week(dry_run):
+    monday = week_monday(dt.datetime.now(PST).date())
+    cycles = [load_cycle(p, ROOT / "programs") for p in sorted((ROOT / "cycles").glob("*.toml"))]
+    cycle = active_cycle(cycles, monday)
+    client = Client()
+    plan = resolve(
+        week_slots(cycle), lambda params: client.search_classes(params, limit=50), client.ride
+    )
+    names = client.instructor_names()
+    print(f"{cycle.name}, week {cycle.week_of(monday)} of {cycle.weeks} (starting {monday}):")
+    for slot, class_id, title, instructor_id in plan:
+        instructor = first_name(names[instructor_id])
+        print(f"  {slot.day.title():<10} {title}, {instructor} ({class_id})")
+    if dry_run:
+        return
+    client.empty_stack()
+    for _, class_id, _, _ in plan:
+        stack = client.add_class(class_id)
+    print_stack(stack)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    commands = parser.add_subparsers(dest="command", required=True)
+    week_parser = commands.add_parser("week")
+    week_parser.add_argument("--dry-run", action="store_true")
+    add_parser = commands.add_parser("add")
+    add_parser.add_argument("class_url_or_id")
+    commands.add_parser("empty")
+    args = parser.parse_args()
+
+    if args.command == "week":
+        week(args.dry_run)
+    elif args.command == "add":
+        print_stack(Client().add_class(class_id_from(args.class_url_or_id)))
+    elif args.command == "empty":
+        Client().empty_stack()
+
+
+if __name__ == "__main__":
+    main()

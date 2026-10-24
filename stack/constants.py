@@ -1,11 +1,11 @@
 class Api:
     ENDPOINT = "https://gql-graphql-gateway.prod.k8s.onepeloton.com/graphql"
-
-
-class Operation:
-    ADD = "add"
-    EMPTY = "empty"
-    VIEW = "view"
+    TOKEN_URL = "https://auth.onepeloton.com/oauth/token"
+    CLIENT_ID = "mgsmWCD0A8Qn6uz6mmqI6qeBNHH9IPwS"
+    SEARCH_URL = "https://api.onepeloton.com/api/v2/ride/archived"
+    RIDE_URL = "https://api.onepeloton.com/api/ride/{}/details"
+    INSTRUCTORS_URL = "https://api.onepeloton.com/api/instructor"
+    SEARCH_PARAM_NAMES = {"categorySlug": "browse_category", "sort": "sort_by"}
 
 
 class Queries:
