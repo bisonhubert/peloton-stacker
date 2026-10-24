@@ -31,7 +31,7 @@ class TestPlan(unittest.TestCase):
         self.assertEqual(week_monday(dt.date(2026, 10, 26)), dt.date(2026, 10, 26))
 
     def test_active_block(self):
-        block = load()
+        block = Block("fall", dt.date(2026, 10, 19), 6, [])
         self.assertIs(active_block([block], dt.date(2026, 10, 19)), block)
         self.assertEqual(block.week_of(dt.date(2026, 11, 23)), 6)
         with self.assertRaises(LookupError):
