@@ -10,16 +10,27 @@ DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sun
 class Slot:
     day: str
     program: str
-    title: str
-    class_id: str = None
+    title: str = None
+    class_ref: str = None
     search_url: str = None
 
 
 @dataclass
 class Program:
     name: str
-    workouts: list
+    workouts: list = field(default_factory=list)
     supplements: list = field(default_factory=list)
+    days: list = field(default_factory=list)
+    rotation: list = field(default_factory=list)
+
+    def workouts_for(self, week):
+        if not self.rotation:
+            return self.workouts
+        offset = (week - 1) * len(self.days)
+        return [
+            {"day": day, "class": self.rotation[(offset + i) % len(self.rotation)]}
+            for i, day in enumerate(self.days)
+        ]
 
 
 @dataclass
@@ -39,10 +50,21 @@ class Cycle:
 
 def load_program(path):
     data = tomllib.loads(Path(path).read_text())
-    for workout in data["workouts"]:
-        if workout["day"] not in DAYS:
-            raise ValueError(f"{path}: {workout['day']} is not a day of the week")
-    return Program(data["name"], data["workouts"], data.get("supplements", []))
+    program = Program(
+        data["name"],
+        data.get("workouts", []),
+        data.get("supplements", []),
+        data.get("days", []),
+        data.get("rotation", []),
+    )
+    if bool(program.workouts) == bool(program.rotation):
+        raise ValueError(f"{path}: set either workouts or rotation")
+    if program.rotation and not program.days:
+        raise ValueError(f"{path}: rotation needs days")
+    for day in program.days + [w["day"] for w in program.workouts]:
+        if day not in DAYS:
+            raise ValueError(f"{path}: {day} is not a day of the week")
+    return program
 
 
 def load_cycle(path, programs_dir):
@@ -66,14 +88,16 @@ def active_cycle(cycles, monday):
     raise LookupError(f"No cycle covers the week of {monday}")
 
 
-def week_slots(cycle):
+def week_slots(cycle, week):
     slots = []
     for day in DAYS:
         for program in cycle.programs:
-            for workout in program.workouts:
+            for workout in program.workouts_for(week):
                 if workout["day"] != day:
                     continue
-                slots.append(Slot(day, program.name, workout["title"], class_id=workout["class"]))
+                slots.append(
+                    Slot(day, program.name, workout.get("title"), class_ref=workout["class"])
+                )
                 for supplement in program.supplements:
                     slots.append(
                         Slot(day, program.name, supplement["title"], search_url=supplement["search"])

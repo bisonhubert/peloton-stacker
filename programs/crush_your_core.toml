@@ -1,0 +1,18 @@
+name = "Emma Lovewell Crush Your Core"
+days = ["tuesday", "thursday", "saturday", "sunday"]
+rotation = [
+    "https://members.onepeloton.com/profile/workouts/783d88295099408e8294bff010308822",
+    "https://members.onepeloton.com/profile/workouts/d4340b883e1b459085b3868da3fbcf1b",
+    "https://members.onepeloton.com/profile/workouts/79e4b114933c4cd990212360a00bd6e4",
+    "https://members.onepeloton.com/profile/workouts/e2f7c19e2fcd409db468aec09a390f77",
+    "https://members.onepeloton.com/profile/workouts/f4e18fd1626b484fbf26d8c416466569",
+    "https://members.onepeloton.com/profile/workouts/f82efe86651048bd97a20c91577a5224",
+    "https://members.onepeloton.com/profile/workouts/28940367ff7d42b3ab03ab75f2283811",
+    "https://members.onepeloton.com/profile/workouts/cdf8edea5e57402889b8b39bf22606a4",
+    "https://members.onepeloton.com/profile/workouts/aad9ffbf3199409c8f9c6e29ad9f4091",
+    "https://members.onepeloton.com/profile/workouts/06449cecc5464af483730f961149bb40",
+    "https://members.onepeloton.com/profile/workouts/e938e767ddea4696af30b22ca3b38407",
+    "https://members.onepeloton.com/profile/workouts/153346c566ab4489b3ecf5f5f40fec5f",
+    "https://members.onepeloton.com/profile/workouts/2a5c9c4d1b944cd48d1989d64477fe5c",
+    "https://members.onepeloton.com/profile/workouts/dae6005234e64b4582a364e62cb2260c",
+]

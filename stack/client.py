@@ -15,6 +15,13 @@ def class_id_from(value):
     return value
 
 
+def workout_id_from(value):
+    url = urlparse(value)
+    if "classId" in parse_qs(url.query) or "/profile/workouts/" not in url.path:
+        return None
+    return url.path.rstrip("/").split("/")[-1]
+
+
 def search_params_from(url):
     params = {}
     for key, values in parse_qs(urlparse(url).query).items():
@@ -75,8 +82,11 @@ class Client:
         resp.raise_for_status()
         return resp.json()
 
-    def ride(self, class_id):
-        return self._get(Api.RIDE_URL.format(class_id))["ride"]
+    def ride(self, class_ref):
+        workout_id = workout_id_from(class_ref)
+        if workout_id:
+            class_ref = self._get(Api.WORKOUT_URL.format(workout_id))["ride"]["id"]
+        return self._get(Api.RIDE_URL.format(class_id_from(class_ref)))["ride"]
 
     def instructor_names(self):
         data = self._get(Api.INSTRUCTORS_URL, {"limit": 500})["data"]

@@ -4,6 +4,7 @@ class Api:
     CLIENT_ID = "mgsmWCD0A8Qn6uz6mmqI6qeBNHH9IPwS"
     SEARCH_URL = "https://api.onepeloton.com/api/v2/ride/archived"
     RIDE_URL = "https://api.onepeloton.com/api/ride/{}/details"
+    WORKOUT_URL = "https://api.onepeloton.com/api/workout/{}"
     INSTRUCTORS_URL = "https://api.onepeloton.com/api/instructor"
     SEARCH_PARAM_NAMES = {"categorySlug": "browse_category", "sort": "sort_by"}
 

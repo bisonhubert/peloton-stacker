@@ -1,17 +1,16 @@
-from stack.client import class_id_from, search_params_from
+from stack.client import search_params_from
 
 
 def resolve(slots, search, ride):
-    used = {class_id_from(s.class_id) for s in slots if s.class_id}
+    used = set()
     resolved = []
     for slot in slots:
-        if slot.class_id:
-            found = ride(class_id_from(slot.class_id))
-            resolved.append((slot, found["id"], slot.title, found["instructor_id"]))
-            continue
-        found = _pick(search, search_params_from(slot.search_url), used)
+        if slot.class_ref:
+            found = ride(slot.class_ref)
+        else:
+            found = _pick(search, search_params_from(slot.search_url), used)
         used.add(found["id"])
-        resolved.append((slot, found["id"], found["title"], found["instructor_id"]))
+        resolved.append((slot, found["id"], slot.title or found["title"], found["instructor_id"]))
     return resolved
 
 

@@ -22,14 +22,17 @@ def week(dry_run):
     cycles = [load_cycle(p, ROOT / "programs") for p in sorted((ROOT / "cycles").glob("*.toml"))]
     cycle = active_cycle(cycles, monday)
     client = Client()
+    week_number = cycle.week_of(monday)
     plan = resolve(
-        week_slots(cycle), lambda params: client.search_classes(params, limit=50), client.ride
+        week_slots(cycle, week_number),
+        lambda params: client.search_classes(params, limit=50),
+        client.ride,
     )
     names = client.instructor_names()
-    print(f"{cycle.name}, week {cycle.week_of(monday)} of {cycle.weeks} (starting {monday}):")
+    print(f"{cycle.name}, week {week_number} of {cycle.weeks} (starting {monday}):")
     for slot, class_id, title, instructor_id in plan:
         instructor = first_name(names[instructor_id])
-        print(f"  {slot.day.title():<10} {title}, {instructor} ({class_id})")
+        print(f"  {slot.day.title():<10} {title} with {instructor} ({class_id})")
     if dry_run:
         return
     client.empty_stack()

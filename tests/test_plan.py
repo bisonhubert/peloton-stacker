@@ -3,15 +3,25 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from stack.client import class_id_from, search_params_from
-from stack.plan import active_cycle, load_cycle, week_monday, week_slots
-from stack.resolve import resolve, first_name
+from stack.client import class_id_from, search_params_from, workout_id_from
+from stack.plan import Cycle, active_cycle, load_cycle, load_program, week_monday, week_slots
+from stack.resolve import first_name, resolve
 
 ROOT = Path(__file__).parent.parent
 
 
 def load():
     return load_cycle(ROOT / "cycles" / "tunde_bootcamp.toml", ROOT / "programs")
+
+
+def bootcamp_only():
+    program = load_program(ROOT / "programs" / "tunde_bike_bootcamp.toml")
+    return Cycle("bootcamp", dt.date(2026, 10, 19), 1, [program])
+
+
+def core_index(slot):
+    workouts = load_program(ROOT / "programs" / "crush_your_core.toml").rotation
+    return workouts.index(slot.class_ref) + 1
 
 
 class TestPlan(unittest.TestCase):
@@ -28,19 +38,40 @@ class TestPlan(unittest.TestCase):
             active_cycle([cycle], dt.date(2026, 11, 30))
 
     def test_week_slots(self):
-        slots = week_slots(load())
+        slots = week_slots(load(), 1)
         self.assertEqual(
-            [(s.day, s.title) for s in slots],
+            [(s.day, s.title or core_index(s)) for s in slots],
             [
                 ("monday", "Lower Body + Climb Ride"),
                 ("monday", "5 min cool down"),
+                ("tuesday", 1),
                 ("wednesday", "Upper Body + Progression Ride"),
                 ("wednesday", "5 min cool down"),
+                ("thursday", 2),
                 ("friday", "Core + Conditioning Ride"),
                 ("friday", "5 min cool down"),
+                ("saturday", 3),
+                ("sunday", 4),
             ],
         )
 
+    def test_rotation_wraps_across_weeks(self):
+        cycle = load()
+        weeks = {
+            week: [core_index(s) for s in week_slots(cycle, week) if not s.title]
+            for week in range(1, 7)
+        }
+        self.assertEqual(
+            weeks,
+            {
+                1: [1, 2, 3, 4],
+                2: [5, 6, 7, 8],
+                3: [9, 10, 11, 12],
+                4: [13, 14, 1, 2],
+                5: [3, 4, 5, 6],
+                6: [7, 8, 9, 10],
+            },
+        )
 
     def test_combined_programs_merge_by_day(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -56,7 +87,7 @@ class TestPlan(unittest.TestCase):
                 '[[workouts]]\nday = "sunday"\ntitle = "B Sun"\nclass = "b2"\n'
             )
             (tmp / "cycle.toml").write_text('start = 2026-10-19\nweeks = 2\nprograms = ["a", "b"]\n')
-            slots = week_slots(load_cycle(tmp / "cycle.toml", tmp))
+            slots = week_slots(load_cycle(tmp / "cycle.toml", tmp), 1)
         self.assertEqual([s.title for s in slots], ["A Mon", "B Tue", "A Sun", "B Sun"])
 
 
@@ -66,8 +97,17 @@ class TestClient(unittest.TestCase):
         self.assertEqual(class_id_from(url), "abc123")
         self.assertEqual(class_id_from("abc123"), "abc123")
 
+    def test_workout_id_from(self):
+        self.assertEqual(
+            workout_id_from("https://members.onepeloton.com/profile/workouts/783d8829"), "783d8829"
+        )
+        self.assertIsNone(
+            workout_id_from("https://members.onepeloton.com/profile/workouts/w1?classId=c1")
+        )
+        self.assertIsNone(workout_id_from("abc123"))
+
     def test_search_params_from(self):
-        params = search_params_from(week_slots(load())[1].search_url)
+        params = search_params_from(week_slots(load(), 1)[1].search_url)
         self.assertEqual(
             params,
             {
@@ -83,8 +123,8 @@ class TestClient(unittest.TestCase):
         )
 
 
-def ride(class_id):
-    return {"id": class_id, "instructor_id": "i"}
+def ride(class_ref):
+    return {"id": class_id_from(class_ref), "title": "Ride", "instructor_id": "i"}
 
 
 class TestResolve(unittest.TestCase):
@@ -96,7 +136,7 @@ class TestResolve(unittest.TestCase):
         def search(params):
             return [{"id": f"cd{i}", "title": f"Cool Down {i}", "instructor_id": "i"} for i in range(5)]
 
-        ids = [class_id for _, class_id, _, _ in resolve(week_slots(load()), search, ride)]
+        ids = [class_id for _, class_id, _, _ in resolve(week_slots(bootcamp_only(), 1), search, ride)]
         self.assertEqual(
             ids,
             [
@@ -114,8 +154,13 @@ class TestResolve(unittest.TestCase):
             rides = [{"id": i, "title": i, "instructor_id": "i"} for i in ("new", "old1", "old2")]
             return rides[:1] if "has_workout" in params else rides
 
-        ids = [class_id for _, class_id, _, _ in resolve(week_slots(load()), search, ride)]
+        ids = [class_id for _, class_id, _, _ in resolve(week_slots(bootcamp_only(), 1), search, ride)]
         self.assertEqual(ids[1::2], ["new", "old1", "old2"])
+
+    def test_untitled_workouts_use_class_title(self):
+        slots = [s for s in week_slots(load(), 1) if not s.title]
+        titles = [title for _, _, title, _ in resolve(slots, None, ride)]
+        self.assertEqual(titles, ["Ride"] * 4)
 
 
 if __name__ == "__main__":
