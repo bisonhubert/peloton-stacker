@@ -1,0 +1,14 @@
+name = "Weekend"
+
+[[shuffles]]
+day = "saturday"
+classes = [
+  "https://members.onepeloton.com/classes/all/?categorySlug=all&is_favorite_ride=%5B%22true%22%5D&duration=%5B%221200%22%5D&sort=original_air_time&desc=true&modal=classDetailsModal&classId=4c0ce72176e84caca2b663ce8e78825c",
+  "https://members.onepeloton.com/classes/all/?categorySlug=all&is_favorite_ride=%5B%22true%22%5D&duration=%5B%221200%22%5D&sort=original_air_time&desc=true&modal=classDetailsModal&classId=bc5b661ea02f46a98f157bfb4073ff02",
+  "https://members.onepeloton.com/classes/all/?categorySlug=all&is_favorite_ride=%5B%22true%22%5D&duration=%5B%221200%22%5D&sort=original_air_time&desc=true&modal=classDetailsModal&classId=3be037995e7d4912b010bc894df3153c",
+  "https://members.onepeloton.com/classes/all/?categorySlug=all&is_favorite_ride=%5B%22true%22%5D&duration=%5B%221200%22%5D&sort=original_air_time&desc=true&modal=classDetailsModal&classId=b2028979383447ec9e121111ada70ed1",
+]
+
+[[shuffles]]
+day = "sunday"
+search = "https://members.onepeloton.com/classes/yoga/?categorySlug=yoga&duration=%5B%222700%22%5D&instructor_id=%5B%22b8c2734e18a7496fa146b3a42465da67%22%5D&class_type_id=%5B%22f5e56124a6f34c9a9dc7659db5d0ed9b%22%5D&sort=original_air_time&desc=true"
