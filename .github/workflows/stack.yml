@@ -1,0 +1,34 @@
+name: Stack classes
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: Day to stack from as YYYY-MM-DD, blank for today
+        required: false
+      dry_run:
+        description: Print the classes without touching the stack
+        type: boolean
+        default: false
+
+concurrency: stack
+
+jobs:
+  stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - run: ./test.sh
+      - run: python3 runner.py stack ${DATE:+--date "$DATE"} $DRY_RUN
+        env:
+          PELOTON_USERNAME: ${{ secrets.PELOTON_USERNAME }}
+          PELOTON_PASSWORD: ${{ secrets.PELOTON_PASSWORD }}
+          DATE: ${{ inputs.date }}
+          DRY_RUN: ${{ inputs.dry_run && '--dry-run' || '' }}
