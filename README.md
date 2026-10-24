@@ -1,12 +1,14 @@
 # peloton-stacker
 
-Stacks my Peloton classes for the week so I don't have to click through the app.
+Keeps my Peloton stack loaded with the next few days of my training plan, so I don't have to click through the app.
 
 ## Story
 
-A block is 1-6 weeks of one or more programs, starting on a Monday. Each week runs Monday - Sunday, and any day can have more than one workout.
+I train in blocks of 1-6 weeks. A block starts on a Monday and combines one or more programs, and any day can have more than one workout.
 
-A program is either the same classes every week, like Tunde's Bike Bootcamp, or a list I rotate through, like Emma's Crush Your Core. A program can have supplements, like a 5 min cool down after every bootcamp class. Supplements come from a Peloton filter URL and prefer classes I haven't taken.
+A program is the same classes every week, like Tunde's Bike Bootcamp, a list I rotate through, like Emma's Crush Your Core, or a pool I shuffle, like my weekend yoga. A program can also have supplements, like a 5 min cool down after every bootcamp class. Supplements come from a Peloton filter URL and prefer classes I haven't taken.
+
+Peloton's stack only holds 10 classes and my weeks have more than that, so every morning the script restacks from today forward.
 
 ```
 programs/   one TOML per program
@@ -27,9 +29,7 @@ Python 3.11+.
 
 ## Stack classes
 
-Peloton's stack holds 10 classes, and a week can have more than that. So instead of stacking a whole week at once, the script stacks from today forward. It empties the stack, then adds today's classes and each day after that until the next day won't fit in 10. It never splits a day, and it rolls into next week and stops at the end of the block. Running it every morning keeps the stack full of what's coming up. A class I skip drops off the next morning.
-
-The script figures out which block and week each day is in from the block's `start`.
+The script empties the stack, then adds today's classes and each day after until the next day won't fit in 10. It never splits a day, rolls into next week, and stops at the end of the block. A class I skip drops off the next morning. It picks every class before emptying the stack, so if anything fails my stack stays as it was.
 
 ```sh
 ./run.sh stack --dry-run   # print what would be stacked, don't touch the stack
@@ -117,7 +117,7 @@ programs = ["tunde_bike_bootcamp", "crush_your_core"]
 
 The script counts weeks from `start`, so `start` is the only thing that sets which week I'm in. If I'm already partway into a block, I count back from this Monday. Week 4 this week means `start` is the Monday three weeks ago.
 
-A block ends the Sunday after its last week. Near the end, the stack stops at that Sunday unless the next block is already in `blocks/`, then it rolls right into it. Once no block covers today, `./run.sh stack` stops with `No block covers the week of ...` and leaves my stack alone, so I add the next block before then. Keep blocks from overlapping.
+A block ends the Sunday after its last week. In a block's last days the stack stops at that Sunday, unless the next block is already in `blocks/`. Once no block covers today, `./run.sh stack` stops with `No block covers the week of ...` and leaves my stack alone, so I add the next block before then. Blocks shouldn't overlap, since the script uses the first one it finds.
 
 Rotations restart at the first class in every new block. To pick up where the last block left off, reorder `rotation` in the program.
 
