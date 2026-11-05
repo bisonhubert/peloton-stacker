@@ -3,7 +3,7 @@ import datetime as dt
 from pathlib import Path
 
 from stack.client import Client, class_id_from
-from stack.plan import STACK_LIMIT, active_block, load_block, week_monday, week_slots, window
+from stack.plan import STACK_LIMIT, active_block, load_block, load_off, week_monday, week_slots, window
 from stack.resolve import resolve, first_name
 
 ROOT = Path(__file__).parent
@@ -17,8 +17,9 @@ def print_stack(stack):
         print(f"  {item['playOrder'] + 1}. {pelo['title']} ({pelo['classId']})")
 
 
-def load_blocks():
-    return [load_block(p, ROOT / "programs") for p in sorted((ROOT / "blocks").glob("*.toml"))]
+def load_schedule():
+    blocks = [load_block(p, ROOT / "programs") for p in sorted((ROOT / "blocks").glob("*.toml"))]
+    return blocks, load_off(ROOT / "off.toml", ROOT / "programs")
 
 
 def resolve_classes(client, slots):
@@ -35,31 +36,31 @@ def today():
 
 def week(week_number):
     monday = week_monday(today())
-    block = active_block(load_blocks(), monday)
+    block = active_block(*load_schedule(), monday)
     if week_number:
-        if not 1 <= week_number <= block.weeks:
-            raise SystemExit(f"--week must be 1-{block.weeks} for {block.name}")
+        if week_number < 1 or (block.weeks and week_number > block.weeks):
+            raise SystemExit(f"--week {week_number} is out of range for {block.name}")
         monday = block.start + dt.timedelta(weeks=week_number - 1)
     week_number = block.week_of(monday)
     client = Client()
     plan = resolve_classes(client, week_slots(block, week_number))
     names = client.instructor_names()
-    print(f"{block.name}, week {week_number} of {block.weeks} (starting {monday}):")
+    print(f"{block.heading(week_number)} (starting {monday}):")
     for slot, class_id, title, instructor_id in plan:
         print_class(slot.day.title(), title, names[instructor_id], class_id)
 
 
 def stack(dry_run, date):
-    classes = window(load_blocks(), date, STACK_LIMIT)
+    classes = window(*load_schedule(), date, STACK_LIMIT)
     client = Client()
     plan = resolve_classes(client, [slot for _, _, slot in classes])
     names = client.instructor_names()
     heading = None
     for (date, block, _), (_, class_id, title, instructor_id) in zip(classes, plan):
-        week_number = block.week_of(week_monday(date))
-        if heading != (block.name, week_number):
-            heading = (block.name, week_number)
-            print(f"{block.name}, week {week_number} of {block.weeks}:")
+        label = block.heading(block.week_of(week_monday(date)))
+        if heading != label:
+            heading = label
+            print(f"{label}:")
         print_class(f"{date:%a %b} {date.day}", title, names[instructor_id], class_id)
     if dry_run:
         return

@@ -1,7 +1,7 @@
 import datetime as dt
 import random
 import tomllib
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 STACK_LIMIT = 10
@@ -15,6 +15,7 @@ class Slot:
     title: str = None
     class_ref: str = None
     search_url: str = None
+    arms_search_url: str = None
     shuffle: tuple = None
 
 
@@ -26,6 +27,8 @@ class Program:
     days: list = field(default_factory=list)
     rotation: list = field(default_factory=list)
     shuffles: list = field(default_factory=list)
+    off_days: list = field(default_factory=list)
+    strength: bool = False
 
     def workouts_for(self, week, block_start):
         if self.shuffles:
@@ -57,8 +60,17 @@ class Block:
     def end(self):
         return self.start + dt.timedelta(weeks=self.weeks)
 
+    @property
+    def strength(self):
+        return any(program.strength for program in self.programs)
+
     def week_of(self, monday):
         return (monday - self.start).days // 7 + 1
+
+    def heading(self, week):
+        if self.weeks:
+            return f"{self.name}, week {week} of {self.weeks}"
+        return f"{self.name}, week {week}"
 
 
 def load_program(path):
@@ -70,6 +82,8 @@ def load_program(path):
         data.get("days", []),
         data.get("rotation", []),
         data.get("shuffles", []),
+        data.get("off_days", []),
+        data.get("strength", False),
     )
     if sum(map(bool, (program.workouts, program.rotation, program.shuffles))) != 1:
         raise ValueError(f"{path}: set one of workouts, rotation, or shuffles")
@@ -78,7 +92,7 @@ def load_program(path):
     for shuffle in program.shuffles:
         if ("classes" in shuffle) == ("search" in shuffle):
             raise ValueError(f"{path}: shuffle on {shuffle['day']} needs either classes or search")
-    for day in program.days + [w["day"] for w in program.workouts + program.shuffles]:
+    for day in program.days + program.off_days + [w["day"] for w in program.workouts + program.shuffles]:
         if day not in DAYS:
             raise ValueError(f"{path}: {day} is not a day of the week")
     return program
@@ -92,6 +106,13 @@ def load_block(path, programs_dir):
         raise ValueError(f"{path}: weeks must be 1-6")
     programs = [load_program(Path(programs_dir) / f"{p}.toml") for p in data["programs"]]
     return Block(Path(path).stem, data["start"], data["weeks"], programs)
+
+
+def load_off(path, programs_dir):
+    data = tomllib.loads(Path(path).read_text())
+    programs = [load_program(Path(programs_dir) / f"{p}.toml") for p in data["programs"]]
+    programs = [replace(p, days=p.off_days or p.days) for p in programs]
+    return Block(Path(path).stem, None, None, programs)
 
 
 def pick(items, seed, week):
@@ -111,11 +132,14 @@ def week_monday(today):
     return today - dt.timedelta(days=today.weekday())
 
 
-def active_block(blocks, monday):
+def active_block(blocks, off, monday):
     for block in blocks:
         if block.start <= monday < block.end:
             return block
-    raise LookupError(f"No block covers the week of {monday}")
+    ended = [block.end for block in blocks if block.end <= monday]
+    if not ended:
+        raise LookupError(f"No block covers the week of {monday}")
+    return replace(off, start=max(ended))
 
 
 def week_slots(block, week):
@@ -132,6 +156,7 @@ def week_slots(block, week):
                         workout.get("title"),
                         class_ref=workout.get("class"),
                         search_url=workout.get("search"),
+                        arms_search_url=None if block.strength else workout.get("arms_search"),
                         shuffle=workout.get("shuffle"),
                     )
                 )
@@ -142,16 +167,11 @@ def week_slots(block, week):
     return slots
 
 
-def window(blocks, today, limit):
+def window(blocks, off, today, limit):
     classes = []
     date = today
     while True:
-        try:
-            block = active_block(blocks, week_monday(date))
-        except LookupError:
-            if date > today:
-                return classes
-            raise
+        block = active_block(blocks, off, week_monday(date))
         day = DAYS[date.weekday()]
         slots = [s for s in week_slots(block, block.week_of(week_monday(date))) if s.day == day]
         if len(classes) + len(slots) > limit:

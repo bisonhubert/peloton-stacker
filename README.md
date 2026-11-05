@@ -8,11 +8,16 @@ I train in blocks of 1-6 weeks. A block starts on a Monday and combines one or m
 
 A program is the same classes every week, like Tunde's Bike Bootcamp, a list I rotate through, like Emma's Crush Your Core, or a pool I shuffle, like my weekend yoga. A program can also have supplements, like a 5 min cool down after every bootcamp class. Supplements come from a Peloton filter URL and prefer classes I haven't taken.
 
+Between blocks I'm on an off schedule: Crush Your Core every day, plus rides and weekends as usual, with no end date.
+
+I only take Low Impact & Arms rides when I'm not in a strength program, and I prefer them then.
+
 Peloton's stack only holds 10 classes and my weeks have more than that, so every morning the script restacks from today forward.
 
 ```
 programs/   one TOML per program
 blocks/     one TOML per block, start date + weeks + programs
+off.toml    programs for the weeks no block covers
 stack/      Peloton client, plan, class picking
 runner.py   CLI
 ```
@@ -29,7 +34,7 @@ Python 3.11+.
 
 ## Stack classes
 
-The script empties the stack, then adds today's classes and each day after until the next day won't fit in 10. It never splits a day, rolls into next week, and stops at the end of the block. A class I skip drops off the next morning. It picks every class before emptying the stack, so if anything fails my stack stays as it was.
+The script empties the stack, then adds today's classes and each day after until the next day won't fit in 10. It never splits a day and rolls into next week, including from a block into the off schedule. A class I skip drops off the next morning. It picks every class before emptying the stack, so if anything fails my stack stays as it was.
 
 ```sh
 ./run.sh stack --dry-run   # print what would be stacked, don't touch the stack
@@ -37,7 +42,7 @@ The script empties the stack, then adds today's classes and each day after until
 ./run.sh stack --date 2026-10-26 --dry-run   # stack from another day
 ```
 
-To see a whole week of the current block without touching the stack:
+To see a whole week of the current block or off schedule without touching the stack:
 
 ```sh
 ./run.sh week              # this week
@@ -89,15 +94,27 @@ search = "https://members.onepeloton.com/classes/cycling/?..."
 
 Programs stack in the order the block lists them, so on Tuesday Weekday Rides comes after Crush Your Core.
 
+A program with `strength = true` makes its block a strength block. Mark Bike Bootcamp, Upper Body Strength, Full Body Strength, and the like. A workout can also set `arms_search`. Outside a strength block it tries that search first and falls back to `search`. In a strength block it ignores `arms_search`.
+
+```toml
+[[workouts]]
+day = "tuesday"
+search = "...has_cycling_arms=%5B%22false%22%5D..."
+arms_search = "...has_cycling_arms=%5B%22true%22%5D..."
+```
+
 Rotating classes, picks up where last week left off and wraps around:
 
 ```toml
 name = "Emma Lovewell Crush Your Core"
 days = ["tuesday", "thursday", "saturday", "sunday"]
+off_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 rotation = [
   "https://members.onepeloton.com/profile/workouts/...",
 ]
 ```
+
+`off_days` is optional and replaces `days` on the off schedule.
 
 Shuffled classes, a random class each week from a pool. Each shuffle has its own pool and goes through every class in it before repeating, then reshuffles. The order is fixed per block, so a dry run and the real run pick the same class. A pool is either a list of classes or a search URL:
 
@@ -129,9 +146,9 @@ programs = ["tunde_bike_bootcamp", "crush_your_core"]
 
 The script counts weeks from `start`, so `start` is the only thing that sets which week I'm in. If I'm already partway into a block, I count back from this Monday. Week 4 this week means `start` is the Monday three weeks ago.
 
-A block ends the Sunday after its last week. In a block's last days the stack stops at that Sunday, unless the next block is already in `blocks/`. Once no block covers today, `./run.sh stack` stops with `No block covers the week of ...` and leaves my stack alone, so I add the next block before then. Blocks shouldn't overlap, since the script uses the first one it finds.
+A block ends the Sunday after its last week. The next Monday the next block starts if it's in `blocks/`, otherwise the off schedule does and runs until a block covers the week. Off weeks count from the end of the last block. Before my first block `./run.sh stack` stops with `No block covers the week of ...` and leaves my stack alone. Blocks shouldn't overlap, since the script uses the first one it finds.
 
-Rotations restart at the first class in every new block. To pick up where the last block left off, reorder `rotation` in the program.
+Rotations restart at the first class in every new block and every off stretch. To pick up where the last block left off, reorder `rotation` in the program.
 
 ## Credit
 

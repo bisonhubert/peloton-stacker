@@ -4,14 +4,29 @@ import unittest
 from pathlib import Path
 
 from stack.client import class_id_from, search_params_from, workout_id_from
-from stack.plan import Block, active_block, load_block, load_program, pick, week_monday, week_slots, window
+from stack.plan import (
+    Block,
+    active_block,
+    load_block,
+    load_off,
+    load_program,
+    pick,
+    week_monday,
+    week_slots,
+    window,
+)
 from stack.resolve import first_name, resolve
 
 ROOT = Path(__file__).parent.parent
+DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
 
 def load():
     return load_block(ROOT / "blocks" / "2026_fall.toml", ROOT / "programs")
+
+
+def off():
+    return load_off(ROOT / "off.toml", ROOT / "programs")
 
 
 def bootcamp_only():
@@ -41,10 +56,10 @@ class TestPlan(unittest.TestCase):
 
     def test_active_block(self):
         block = Block("fall", dt.date(2026, 10, 19), 6, [])
-        self.assertIs(active_block([block], dt.date(2026, 10, 19)), block)
+        self.assertIs(active_block([block], off(), dt.date(2026, 10, 19)), block)
         self.assertEqual(block.week_of(dt.date(2026, 11, 23)), 6)
         with self.assertRaises(LookupError):
-            active_block([block], dt.date(2026, 11, 30))
+            active_block([block], off(), dt.date(2026, 10, 12))
 
     def test_week_slots(self):
         slots = week_slots(load(), 1)
@@ -106,7 +121,7 @@ class TestPlan(unittest.TestCase):
 
 class TestWindow(unittest.TestCase):
     def days(self, today, limit=10):
-        classes = window([load()], today, limit)
+        classes = window([load()], off(), today, limit)
         return [date for date, _, _ in classes], len(classes)
 
     def test_fills_whole_days_up_to_the_limit(self):
@@ -116,23 +131,105 @@ class TestWindow(unittest.TestCase):
         self.assertEqual(dates[-1], dt.date(2026, 10, 23))
 
     def test_rolls_into_next_week(self):
-        classes = window([load()], dt.date(2026, 10, 24), 10)
+        classes = window([load()], off(), dt.date(2026, 10, 24), 10)
         self.assertEqual(len(classes), 10)
         self.assertEqual(classes[-1][0], dt.date(2026, 10, 28))
         self.assertEqual(classes[-1][1].week_of(dt.date(2026, 10, 26)), 5)
 
-    def test_stops_at_block_end(self):
-        dates, count = self.days(dt.date(2026, 11, 7))
-        self.assertEqual(count, 4)
-        self.assertEqual(dates[-1], dt.date(2026, 11, 8))
+    def test_rolls_from_block_into_off(self):
+        classes = window([load()], off(), dt.date(2026, 11, 7), 10)
+        self.assertEqual(len(classes), 10)
+        self.assertEqual(classes[3][1].name, "2026_fall")
+        self.assertEqual(classes[4][1].name, "off")
+        self.assertEqual(classes[-1][0], dt.date(2026, 11, 12))
 
-    def test_no_block_today(self):
+    def test_before_first_block(self):
         with self.assertRaises(LookupError):
-            window([load()], dt.date(2026, 11, 9), 10)
+            window([load()], off(), dt.date(2026, 9, 27), 10)
 
     def test_day_bigger_than_limit(self):
         with self.assertRaises(ValueError):
-            window([load()], dt.date(2026, 10, 19), 1)
+            window([load()], off(), dt.date(2026, 10, 19), 1)
+
+
+class TestOff(unittest.TestCase):
+    def test_starts_when_the_last_block_ends(self):
+        block = active_block([load()], off(), dt.date(2026, 11, 16))
+        self.assertEqual(block.start, dt.date(2026, 11, 9))
+        self.assertEqual(block.heading(block.week_of(dt.date(2026, 11, 16))), "off, week 2")
+
+    def test_next_block_takes_over_and_off_restarts_after_it(self):
+        fall = load()
+        winter = Block("winter", dt.date(2026, 12, 7), 1, [])
+        self.assertIs(active_block([fall, winter], off(), dt.date(2026, 12, 7)), winter)
+        block = active_block([fall, winter], off(), dt.date(2026, 12, 14))
+        self.assertEqual(block.start, dt.date(2026, 12, 14))
+
+    def test_core_runs_daily_and_rotates(self):
+        block = active_block([load()], off(), dt.date(2026, 11, 9))
+        weeks = {
+            week: [(s.day, core_index(s)) for s in week_slots(block, week) if s.program == CORE]
+            for week in (1, 2, 3)
+        }
+        self.assertEqual(weeks[1], list(zip(DAYS, range(1, 8))))
+        self.assertEqual(weeks[2], list(zip(DAYS, range(8, 15))))
+        self.assertEqual(weeks[3], weeks[1])
+
+    def test_block_keeps_core_on_its_own_days(self):
+        days = [s.day for s in week_slots(load(), 1) if s.program == CORE]
+        self.assertEqual(days, ["tuesday", "thursday", "saturday", "sunday"])
+
+    def test_week(self):
+        block = active_block([load()], off(), dt.date(2026, 11, 9))
+        self.assertEqual(
+            [(s.day, s.program) for s in week_slots(block, 1) if s.program != CORE],
+            [
+                ("tuesday", "Weekday Rides"),
+                ("thursday", "Weekday Rides"),
+                ("saturday", "Weekend"),
+                ("sunday", "Weekend"),
+            ],
+        )
+
+
+class TestArmsRides(unittest.TestCase):
+    def rides_slots(self, block):
+        return [s for s in week_slots(block, 1) if s.program == "Weekday Rides"]
+
+    def off_block(self):
+        return active_block([load()], off(), dt.date(2026, 11, 9))
+
+    def test_strength_block_never_searches_arms_rides(self):
+        searches = []
+
+        def search(params):
+            searches.append(params)
+            return [{"id": f"r{len(searches)}", "title": "Ride", "instructor_id": "i"}]
+
+        resolve(self.rides_slots(load()), search, ride)
+        self.assertEqual([s["has_cycling_arms"] for s in searches], ["false", "false"])
+
+    def test_off_prioritizes_arms_rides(self):
+        def search(params):
+            arms = params["has_cycling_arms"] == "true"
+            return [{"id": f"{arms}{params['duration']}", "title": "Ride", "instructor_id": "i"}]
+
+        ids = [class_id for _, class_id, _, _ in resolve(self.rides_slots(self.off_block()), search, ride)]
+        self.assertEqual(ids, ["True1200", "True1800"])
+
+    def test_block_without_strength_prioritizes_arms_rides(self):
+        program = load_program(ROOT / "programs" / "weekday_rides.toml")
+        block = Block("rides", dt.date(2026, 10, 19), 1, [program])
+        self.assertTrue(all(s.arms_search_url for s in self.rides_slots(block)))
+
+    def test_off_falls_back_when_no_arms_rides(self):
+        def search(params):
+            if params["has_cycling_arms"] == "true":
+                return []
+            return [{"id": params["duration"], "title": "Ride", "instructor_id": "i"}]
+
+        ids = [class_id for _, class_id, _, _ in resolve(self.rides_slots(self.off_block()), search, ride)]
+        self.assertEqual(ids, ["1200", "1800"])
 
 
 class TestShuffle(unittest.TestCase):
@@ -275,6 +372,7 @@ class TestResolve(unittest.TestCase):
         )
         self.assertEqual(searches[0]["duration"], "1200")
         self.assertEqual(searches[1]["duration"], "1800")
+        self.assertEqual(searches[0]["has_cycling_arms"], "false")
         self.assertEqual(searches[1]["has_cycling_arms"], "false")
 
     def test_untitled_workouts_use_class_title(self):

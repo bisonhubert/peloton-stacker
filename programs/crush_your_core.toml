@@ -1,5 +1,6 @@
 name = "Emma Lovewell Crush Your Core"
 days = ["tuesday", "thursday", "saturday", "sunday"]
+off_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 rotation = [
     "https://members.onepeloton.com/profile/workouts/783d88295099408e8294bff010308822",
     "https://members.onepeloton.com/profile/workouts/d4340b883e1b459085b3868da3fbcf1b",
