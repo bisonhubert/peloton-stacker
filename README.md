@@ -148,7 +148,7 @@ The script counts weeks from `start`, so `start` is the only thing that sets whi
 
 A block ends the Sunday after its last week. The next Monday the next block starts if it's in `blocks/`, otherwise the off schedule does and runs until a block covers the week. Off weeks count from the end of the last block. Before my first block `./run.sh stack` stops with `No block covers the week of ...` and leaves my stack alone. Blocks shouldn't overlap, since the script uses the first one it finds.
 
-A block can pause for `breaks`, Mondays of weeks that run the off schedule instead. Breaks don't count toward `weeks`, so the block ends that many weeks later, and the week after a break picks up where the block left off.
+A block can pause for `breaks`, Mondays of weeks that run the off schedule instead. Breaks don't count toward `weeks`, so the block ends that many weeks later, and the week after a break picks up where the block left off. Rotations keep going through breaks, so Crush Your Core picks up on the next class instead of starting over.
 
 ```toml
 start = 2026-11-16
@@ -157,7 +157,7 @@ breaks = [2026-11-23, 2026-12-21]
 programs = ["tunde_bike_bootcamp", "crush_your_core", "weekday_rides", "weekend"]
 ```
 
-Rotations restart at the first class in every new block and every off stretch or break. To pick up where the last block left off, reorder `rotation` in the program.
+Rotations restart at the first class in every new block and every off stretch. To pick up where the last block left off, reorder `rotation` in the program.
 
 ## Credit
 

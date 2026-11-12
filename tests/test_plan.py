@@ -1,6 +1,7 @@
 import datetime as dt
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 
 from stack.client import class_id_from, search_params_from, workout_id_from
@@ -56,7 +57,7 @@ class TestPlan(unittest.TestCase):
 
     def test_active_block(self):
         block = Block("fall", dt.date(2026, 10, 19), 6, [])
-        self.assertIs(active_block([block], off(), dt.date(2026, 10, 19)), block)
+        self.assertEqual(active_block([block], off(), dt.date(2026, 10, 19)).name, "fall")
         self.assertEqual(block.week_of(dt.date(2026, 11, 23)), 6)
         with self.assertRaises(LookupError):
             active_block([block], off(), dt.date(2026, 10, 12))
@@ -166,6 +167,15 @@ class TestBreaks(unittest.TestCase):
         slots = week_slots(block, 1)
         self.assertEqual([s.day for s in slots if s.program == CORE], DAYS)
 
+    def test_core_continues_through_breaks(self):
+        fall = load()
+        winter = replace(fall, name="winter", start=dt.date(2026, 11, 16), weeks=2, breaks=[dt.date(2026, 11, 23)])
+        indexes = []
+        for monday in (dt.date(2026, 11, 16), dt.date(2026, 11, 23), dt.date(2026, 11, 30)):
+            block = active_block([winter], off(), monday)
+            indexes += [core_index(s) for s in week_slots(block, block.week_of(monday)) if s.program == CORE]
+        self.assertEqual(indexes, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1])
+
     def test_rejects_break_outside_the_block(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "block.toml"
@@ -183,7 +193,7 @@ class TestOff(unittest.TestCase):
     def test_next_block_takes_over_and_off_restarts_after_it(self):
         fall = load()
         winter = Block("winter", dt.date(2026, 12, 7), 1, [])
-        self.assertIs(active_block([fall, winter], off(), dt.date(2026, 12, 7)), winter)
+        self.assertEqual(active_block([fall, winter], off(), dt.date(2026, 12, 7)).name, "winter")
         block = active_block([fall, winter], off(), dt.date(2026, 12, 14))
         self.assertEqual(block.start, dt.date(2026, 12, 14))
 

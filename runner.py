@@ -35,12 +35,14 @@ def today():
 
 
 def week(week_number):
+    schedule = load_schedule()
     monday = week_monday(today())
-    block = active_block(*load_schedule(), monday)
+    block = active_block(*schedule, monday)
     if week_number:
         if week_number < 1 or (block.weeks and week_number > block.weeks):
             raise SystemExit(f"--week {week_number} is out of range for {block.name}")
         monday = block.monday_of(week_number)
+        block = active_block(*schedule, monday)
     week_number = block.week_of(monday)
     client = Client()
     plan = resolve_classes(client, week_slots(block, week_number))

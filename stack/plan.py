@@ -30,12 +30,12 @@ class Program:
     off_days: list = field(default_factory=list)
     strength: bool = False
 
-    def workouts_for(self, week, block_start):
+    def workouts_for(self, week, block_start, done=None):
         if self.shuffles:
             return [self._shuffle(shuffle, week, block_start) for shuffle in self.shuffles]
         if not self.rotation:
             return self.workouts
-        offset = (week - 1) * len(self.days)
+        offset = (week - 1) * len(self.days) if done is None else done.get(self.name, 0)
         return [
             {"day": day, "class": self.rotation[(offset + i) % len(self.rotation)]}
             for i, day in enumerate(self.days)
@@ -56,6 +56,7 @@ class Block:
     weeks: int
     programs: list
     breaks: list = field(default_factory=list)
+    done: dict = None
 
     @property
     def end(self):
@@ -151,23 +152,36 @@ def week_monday(today):
 def active_block(blocks, off, monday):
     for block in blocks:
         if block.start <= monday < block.end:
+            done = rotation_done(block, off, monday)
             if monday in block.breaks:
                 start = monday
                 while start - dt.timedelta(weeks=1) in block.breaks:
                     start -= dt.timedelta(weeks=1)
-                return replace(off, name=f"{block.name} break", start=start)
-            return block
+                return replace(off, name=f"{block.name} break", start=start, done=done)
+            return replace(block, done=done)
     ended = [block.end for block in blocks if block.end <= monday]
     if not ended:
         raise LookupError(f"No block covers the week of {monday}")
     return replace(off, start=max(ended))
 
 
+def rotation_done(block, off, monday):
+    done = {}
+    week = block.start
+    while week < monday:
+        programs = off.programs if week in block.breaks else block.programs
+        for program in programs:
+            if program.rotation:
+                done[program.name] = done.get(program.name, 0) + len(program.days)
+        week += dt.timedelta(weeks=1)
+    return done
+
+
 def week_slots(block, week):
     slots = []
     for day in DAYS:
         for program in block.programs:
-            for workout in program.workouts_for(week, block.start):
+            for workout in program.workouts_for(week, block.start, block.done):
                 if workout["day"] != day:
                     continue
                 slots.append(
