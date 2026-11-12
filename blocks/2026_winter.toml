@@ -1,0 +1,4 @@
+start = 2026-11-16
+weeks = 5
+breaks = [2026-11-23, 2026-12-21]
+programs = ["tunde_bike_bootcamp", "crush_your_core", "weekday_rides", "weekend"]
