@@ -4,7 +4,7 @@ import tomllib
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
-STACK_LIMIT = 10
+STACK_LIMIT = 25
 DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
 
@@ -55,17 +55,25 @@ class Block:
     start: dt.date
     weeks: int
     programs: list
+    breaks: list = field(default_factory=list)
 
     @property
     def end(self):
-        return self.start + dt.timedelta(weeks=self.weeks)
+        return self.start + dt.timedelta(weeks=self.weeks + len(self.breaks))
 
     @property
     def strength(self):
         return any(program.strength for program in self.programs)
 
     def week_of(self, monday):
-        return (monday - self.start).days // 7 + 1
+        return (monday - self.start).days // 7 + 1 - sum(b < monday for b in self.breaks)
+
+    def monday_of(self, week):
+        monday = self.start + dt.timedelta(weeks=week - 1)
+        for b in sorted(self.breaks):
+            if b <= monday:
+                monday += dt.timedelta(weeks=1)
+        return monday
 
     def heading(self, week):
         if self.weeks:
@@ -105,7 +113,15 @@ def load_block(path, programs_dir):
     if not 1 <= data["weeks"] <= 6:
         raise ValueError(f"{path}: weeks must be 1-6")
     programs = [load_program(Path(programs_dir) / f"{p}.toml") for p in data["programs"]]
-    return Block(Path(path).stem, data["start"], data["weeks"], programs)
+    block = Block(Path(path).stem, data["start"], data["weeks"], programs, data.get("breaks", []))
+    for b in block.breaks:
+        if b.weekday() != 0:
+            raise ValueError(f"{path}: break {b} is not a Monday")
+        if not block.start < b < block.end - dt.timedelta(weeks=1):
+            raise ValueError(f"{path}: break {b} is not between two weeks of the block")
+    if len(set(block.breaks)) != len(block.breaks):
+        raise ValueError(f"{path}: breaks repeat")
+    return block
 
 
 def load_off(path, programs_dir):
@@ -135,6 +151,11 @@ def week_monday(today):
 def active_block(blocks, off, monday):
     for block in blocks:
         if block.start <= monday < block.end:
+            if monday in block.breaks:
+                start = monday
+                while start - dt.timedelta(weeks=1) in block.breaks:
+                    start -= dt.timedelta(weeks=1)
+                return replace(off, name=f"{block.name} break", start=start)
             return block
     ended = [block.end for block in blocks if block.end <= monday]
     if not ended:
@@ -167,16 +188,15 @@ def week_slots(block, week):
     return slots
 
 
-def window(blocks, off, today, limit):
-    classes = []
-    date = today
-    while True:
-        block = active_block(blocks, off, week_monday(date))
-        day = DAYS[date.weekday()]
-        slots = [s for s in week_slots(block, block.week_of(week_monday(date))) if s.day == day]
-        if len(classes) + len(slots) > limit:
-            if date > today:
-                return classes
-            raise ValueError(f"{date} has {len(slots)} classes, more than the {limit} a stack holds")
-        classes += [(date, block, slot) for slot in slots]
-        date += dt.timedelta(days=1)
+def rest_of_week(blocks, off, today):
+    monday = week_monday(today)
+    block = active_block(blocks, off, monday)
+    slots = week_slots(block, block.week_of(monday))
+    classes = [
+        (monday + dt.timedelta(days=DAYS.index(slot.day)), block, slot)
+        for slot in slots
+        if DAYS.index(slot.day) >= today.weekday()
+    ]
+    if len(classes) > STACK_LIMIT:
+        raise ValueError(f"{today} to Sunday has {len(classes)} classes, more than a stack holds")
+    return classes

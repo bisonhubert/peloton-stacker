@@ -1,6 +1,6 @@
 # peloton-stacker
 
-Keeps my Peloton stack loaded with the next few days of my training plan, so I don't have to click through the app.
+Keeps my Peloton stack loaded with this week of my training plan, so I don't have to click through the app.
 
 ## Story
 
@@ -12,7 +12,7 @@ Between blocks I'm on an off schedule: Crush Your Core every day, plus rides and
 
 I only take Low Impact & Arms rides when I'm not in a strength program, and I prefer them then.
 
-Peloton's stack only holds 10 classes and my weeks have more than that, so every morning the script restacks from today forward.
+Peloton's stack holds 25 classes, enough for a whole week, so every Monday the script stacks the week.
 
 ```
 programs/   one TOML per program
@@ -34,7 +34,7 @@ Python 3.11+.
 
 ## Stack classes
 
-The script empties the stack, then adds today's classes and each day after until the next day won't fit in 10. It never splits a day and rolls into next week, including from a block into the off schedule. A class I skip drops off the next morning. It picks every class before emptying the stack, so if anything fails my stack stays as it was.
+The script empties the stack, then adds today's classes and each day after through Sunday. It never rolls into next week, so a block and the off schedule never share a stack. If the rest of the week has more than 25 classes it stops and leaves my stack alone. A class I skip stays until next Monday. It picks every class before emptying the stack, so if anything fails my stack stays as it was.
 
 ```sh
 ./run.sh stack --dry-run   # print what would be stacked, don't touch the stack
@@ -59,9 +59,9 @@ To see a whole week of the current block or off schedule without touching the st
 
 ## Run it on GitHub
 
-`.github/workflows/stack.yml` runs the tests and then `stack` every day at midnight Pacific. It reads `PELOTON_USERNAME` and `PELOTON_PASSWORD` from the repo's Actions secrets, under Settings, Secrets and variables, Actions.
+`.github/workflows/stack.yml` runs the tests and then `stack` every Monday at midnight Pacific. It reads `PELOTON_USERNAME` and `PELOTON_PASSWORD` from the repo's Actions secrets, under Settings, Secrets and variables, Actions.
 
-To run it by hand, open Actions, pick Stack classes, and Run workflow. I can fill in a date to stack from or check dry run there.
+To run it by hand, open Actions, pick Stack classes, and Run workflow. I can fill in a date to stack from or check dry run there. A midweek run stacks from that day through Sunday.
 
 GitHub turns off scheduled workflows after 60 days without a commit, so if a block goes quiet that long I re-enable it from the Actions tab.
 
@@ -148,7 +148,16 @@ The script counts weeks from `start`, so `start` is the only thing that sets whi
 
 A block ends the Sunday after its last week. The next Monday the next block starts if it's in `blocks/`, otherwise the off schedule does and runs until a block covers the week. Off weeks count from the end of the last block. Before my first block `./run.sh stack` stops with `No block covers the week of ...` and leaves my stack alone. Blocks shouldn't overlap, since the script uses the first one it finds.
 
-Rotations restart at the first class in every new block and every off stretch. To pick up where the last block left off, reorder `rotation` in the program.
+A block can pause for `breaks`, Mondays of weeks that run the off schedule instead. Breaks don't count toward `weeks`, so the block ends that many weeks later, and the week after a break picks up where the block left off.
+
+```toml
+start = 2026-11-16
+weeks = 5
+breaks = [2026-11-23, 2026-12-21]
+programs = ["tunde_bike_bootcamp", "crush_your_core", "weekday_rides", "weekend"]
+```
+
+Rotations restart at the first class in every new block and every off stretch or break. To pick up where the last block left off, reorder `rotation` in the program.
 
 ## Credit
 

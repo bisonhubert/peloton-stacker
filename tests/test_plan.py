@@ -11,9 +11,9 @@ from stack.plan import (
     load_off,
     load_program,
     pick,
+    rest_of_week,
     week_monday,
     week_slots,
-    window,
 )
 from stack.resolve import first_name, resolve
 
@@ -119,37 +119,59 @@ class TestPlan(unittest.TestCase):
         self.assertEqual([s.title for s in slots], ["A Mon", "B Tue", "A Sun", "B Sun"])
 
 
-class TestWindow(unittest.TestCase):
-    def days(self, today, limit=10):
-        classes = window([load()], off(), today, limit)
-        return [date for date, _, _ in classes], len(classes)
+class TestRestOfWeek(unittest.TestCase):
+    def test_stacks_the_whole_week_from_monday(self):
+        classes = rest_of_week([load()], off(), dt.date(2026, 10, 19))
+        self.assertEqual(len(classes), 14)
+        self.assertEqual(classes[0][0], dt.date(2026, 10, 19))
+        self.assertEqual(classes[-1][0], dt.date(2026, 10, 25))
+        self.assertEqual([date for date, _, _ in classes], sorted(date for date, _, _ in classes))
 
-    def test_fills_whole_days_up_to_the_limit(self):
-        dates, count = self.days(dt.date(2026, 10, 19))
-        self.assertEqual(count, 10)
-        self.assertEqual(dates[0], dt.date(2026, 10, 19))
-        self.assertEqual(dates[-1], dt.date(2026, 10, 23))
+    def test_midweek_stacks_through_sunday(self):
+        classes = rest_of_week([load()], off(), dt.date(2026, 10, 24))
+        self.assertEqual({date for date, _, _ in classes}, {dt.date(2026, 10, 24), dt.date(2026, 10, 25)})
 
-    def test_rolls_into_next_week(self):
-        classes = window([load()], off(), dt.date(2026, 10, 24), 10)
-        self.assertEqual(len(classes), 10)
-        self.assertEqual(classes[-1][0], dt.date(2026, 10, 28))
-        self.assertEqual(classes[-1][1].week_of(dt.date(2026, 10, 26)), 5)
+    def test_never_rolls_into_next_week(self):
+        classes = rest_of_week([load()], off(), dt.date(2026, 11, 8))
+        self.assertEqual({date for date, _, _ in classes}, {dt.date(2026, 11, 8)})
+        self.assertEqual({block.name for _, block, _ in classes}, {"2026_fall"})
 
-    def test_rolls_from_block_into_off(self):
-        classes = window([load()], off(), dt.date(2026, 11, 7), 10)
-        self.assertEqual(len(classes), 10)
-        self.assertEqual(classes[3][1].name, "2026_fall")
-        self.assertEqual(classes[4][1].name, "off")
-        self.assertEqual(classes[-1][0], dt.date(2026, 11, 12))
+    def test_off_week(self):
+        classes = rest_of_week([load()], off(), dt.date(2026, 11, 9))
+        self.assertEqual(len(classes), 11)
+        self.assertEqual({block.name for _, block, _ in classes}, {"off"})
 
     def test_before_first_block(self):
         with self.assertRaises(LookupError):
-            window([load()], off(), dt.date(2026, 9, 27), 10)
+            rest_of_week([load()], off(), dt.date(2026, 9, 27))
 
-    def test_day_bigger_than_limit(self):
-        with self.assertRaises(ValueError):
-            window([load()], off(), dt.date(2026, 10, 19), 1)
+
+class TestBreaks(unittest.TestCase):
+    def winter(self):
+        return Block(
+            "winter", dt.date(2026, 11, 16), 3, [], [dt.date(2026, 11, 23), dt.date(2026, 11, 30)]
+        )
+
+    def test_breaks_extend_the_block_and_skip_week_numbers(self):
+        block = self.winter()
+        self.assertEqual(block.end, dt.date(2026, 12, 21))
+        self.assertEqual(block.week_of(dt.date(2026, 12, 7)), 2)
+        self.assertEqual(block.week_of(dt.date(2026, 12, 14)), 3)
+        self.assertEqual(block.monday_of(2), dt.date(2026, 12, 7))
+
+    def test_break_runs_the_off_schedule_from_its_first_week(self):
+        block = active_block([self.winter()], off(), dt.date(2026, 11, 30))
+        self.assertEqual(block.name, "winter break")
+        self.assertEqual(block.week_of(dt.date(2026, 11, 30)), 2)
+        slots = week_slots(block, 1)
+        self.assertEqual([s.day for s in slots if s.program == CORE], DAYS)
+
+    def test_rejects_break_outside_the_block(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "block.toml"
+            path.write_text("start = 2026-11-16\nweeks = 2\nbreaks = [2026-11-16]\nprograms = []\n")
+            with self.assertRaises(ValueError):
+                load_block(path, ROOT / "programs")
 
 
 class TestOff(unittest.TestCase):

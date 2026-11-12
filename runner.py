@@ -3,7 +3,7 @@ import datetime as dt
 from pathlib import Path
 
 from stack.client import Client, class_id_from
-from stack.plan import STACK_LIMIT, active_block, load_block, load_off, week_monday, week_slots, window
+from stack.plan import active_block, load_block, load_off, rest_of_week, week_monday, week_slots
 from stack.resolve import resolve, first_name
 
 ROOT = Path(__file__).parent
@@ -40,7 +40,7 @@ def week(week_number):
     if week_number:
         if week_number < 1 or (block.weeks and week_number > block.weeks):
             raise SystemExit(f"--week {week_number} is out of range for {block.name}")
-        monday = block.start + dt.timedelta(weeks=week_number - 1)
+        monday = block.monday_of(week_number)
     week_number = block.week_of(monday)
     client = Client()
     plan = resolve_classes(client, week_slots(block, week_number))
@@ -51,7 +51,7 @@ def week(week_number):
 
 
 def stack(dry_run, date):
-    classes = window(*load_schedule(), date, STACK_LIMIT)
+    classes = rest_of_week(*load_schedule(), date)
     client = Client()
     plan = resolve_classes(client, [slot for _, _, slot in classes])
     names = client.instructor_names()
