@@ -1,7 +1,10 @@
 import datetime as dt
+import re
 
 from stack.client import search_params_from
 from stack.plan import pick
+
+ARMS = re.compile(r"\barms?\b", re.IGNORECASE)
 
 
 def resolve(slots, search, ride):
@@ -28,9 +31,13 @@ def _pick(search, searches, used):
     for params in searches:
         for attempt in (params, {k: v for k, v in params.items() if k != "has_workout"}):
             for ride in search(attempt):
-                if ride["id"] not in used:
+                if ride["id"] not in used and not _unwanted_arms(params, ride):
                     return ride
     raise LookupError(f"No class left for search {searches}")
+
+
+def _unwanted_arms(params, ride):
+    return params.get("has_cycling_arms") == "false" and ARMS.search(ride["title"])
 
 
 def _draw(search, params, seed, week, aired_before):

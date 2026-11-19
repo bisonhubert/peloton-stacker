@@ -407,6 +407,16 @@ class TestResolve(unittest.TestCase):
         self.assertEqual(searches[0]["has_cycling_arms"], "false")
         self.assertEqual(searches[1]["has_cycling_arms"], "false")
 
+    def test_no_arms_searches_skip_arms_titles(self):
+        def search(params):
+            titles = ["20 min Low Impact & Arms Ride", "20 min Arm Ride", "20 min Warm Up Ride"]
+            return [{"id": t, "title": t, "instructor_id": "i"} for t in titles]
+
+        slots = [s for s in week_slots(load(), 1) if s.program == "Weekday Rides"]
+        with self.assertRaises(LookupError):
+            resolve(slots, search, ride)
+        self.assertEqual(resolve(slots[:1], search, ride)[0][2], "20 min Warm Up Ride")
+
     def test_untitled_workouts_use_class_title(self):
         slots = [s for s in week_slots(load(), 1) if s.program == CORE]
         titles = [title for _, _, title, _ in resolve(slots, None, ride)]
