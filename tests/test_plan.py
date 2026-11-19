@@ -244,10 +244,10 @@ class TestArmsRides(unittest.TestCase):
     def test_off_prioritizes_arms_rides(self):
         def search(params):
             arms = params["has_cycling_arms"] == "true"
-            return [{"id": f"{arms}{params['duration']}", "title": "Ride", "instructor_id": "i"}]
+            return [{"id": f"{arms}{params['duration']}{n}", "title": "Ride", "instructor_id": "i"} for n in "ab"]
 
         ids = [class_id for _, class_id, _, _ in resolve(self.rides_slots(self.off_block()), search, ride)]
-        self.assertEqual(ids, ["True1200", "True1800"])
+        self.assertEqual(ids, ["True1800a", "True1800b"])
 
     def test_block_without_strength_prioritizes_arms_rides(self):
         program = load_program(ROOT / "programs" / "weekday_rides.toml")
@@ -258,10 +258,10 @@ class TestArmsRides(unittest.TestCase):
         def search(params):
             if params["has_cycling_arms"] == "true":
                 return []
-            return [{"id": params["duration"], "title": "Ride", "instructor_id": "i"}]
+            return [{"id": params["duration"] + n, "title": "Ride", "instructor_id": "i"} for n in "ab"]
 
         ids = [class_id for _, class_id, _, _ in resolve(self.rides_slots(self.off_block()), search, ride)]
-        self.assertEqual(ids, ["1200", "1800"])
+        self.assertEqual(ids, ["1800a", "1800b"])
 
 
 class TestShuffle(unittest.TestCase):
@@ -402,7 +402,7 @@ class TestResolve(unittest.TestCase):
             [(s.day, title) for s, _, title, _ in resolved],
             [("tuesday", "New"), ("thursday", "Taken")],
         )
-        self.assertEqual(searches[0]["duration"], "1200")
+        self.assertEqual(searches[0]["duration"], "1800")
         self.assertEqual(searches[1]["duration"], "1800")
         self.assertEqual(searches[0]["has_cycling_arms"], "false")
         self.assertEqual(searches[1]["has_cycling_arms"], "false")
